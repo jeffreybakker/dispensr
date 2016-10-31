@@ -4,104 +4,84 @@ conn = None
 
 
 def init(file, first_time=False):
-	global conn
+    global conn
 
-	if conn is not None:
-		close()
+    if conn is not None:
+        close()
 
-	conn = sqlite.connect(file)
+    conn = sqlite.connect(file)
 
-	if first_time:
-		setup()
+    if first_time:
+        _setup()
+        conn.commit()
 
 
 def close():
-	global conn
-	conn.commit()
-	conn.close()
-	conn = None
+    global conn
+    conn.commit()
+    conn.close()
+    conn = None
 
 
 def get_cursor():
-	global conn
-	return conn.cursor()
+    global conn
+    return conn.cursor()
 
 
 def get_user_by_uid(uid):
-	c = get_cursor()
-
-	c.execute('''
-        SELECT * FROM Users
-        WHERE id=?
-    ''', uid)
+    c = get_cursor()
+    c.execute('''SELECT * FROM Users WHERE id=?''', uid)
 
 
 def get_user_by_rfid(rfid):
-	c = get_cursor()
-
-	c.execute('''
-	        SELECT * FROM Users
-	        WHERE rfid=?
-	    ''', rfid)
+    c = get_cursor()
+    c.execute('''SELECT * FROM Users WHERE rfid=?''', rfid)
 
 
 def get_users_by_role(role):
-	c = get_cursor()
-
-	c.execute('''
-            SELECT * FROM Users
-            WHERE role=?
-        ''', role)
+    c = get_cursor()
+    c.execute('''SELECT * FROM Users WHERE role=?''', role)
 
 
 def get_user_by_login(username, password):
-	c = get_cursor()
-	c.execute(
-		'''SELECT * FROM Users WHERE username=? AND password=?''',
-		username, password)
+    c = get_cursor()
+    c.execute(
+        '''SELECT * FROM Users WHERE username=? AND password=?''',
+        username, password)
 
 
 def get_users():
-	c = get_cursor()
-	c.execute('''SELECT * FROM Users''')
+    c = get_cursor()
+    c.execute('''SELECT * FROM Users''')
 
 
 def get_prescriptions_by_uid(uid):
     c = get_cursor()
-
     c.execute('''SELECT * FROM Prescriptions WHERE uid=?''', uid)
-    pass
 
 
 def get_prescriptions():
     c = get_cursor()
-
     c.execute('''SELECT * FROM Prescriptions''')
-    pass
 
 
 def get_inventory_by_iid(iid):
     c = get_cursor()
-
     c.execute('''SELECT * FROM Inventory WHERE id=?''', iid)
-    pass
 
 
 def get_inventory():
     c = get_cursor()
-
     c.execute('''SELECT * FROM Inventory''')
-    pass
 
 
-def setup():
-	c = get_cursor()
+def _setup():
+    c = get_cursor()
+    c.execute("DROP TABLE IF EXISTS Inventory")
+    c.execute("DROP TABLE IF EXISTS Prescription")
+    c.execute("DROP TABLE IF EXISTS Users")
 
-	c.execute('''
-        DROP TABLE Inventory;
-        DROP TABLE Prescription;
-        DROP TABLE Users;
-        
+    c.execute("""\
         CREATE TABLE Users
         (
             id			INTEGER(11)		PRIMARY KEY		NOT NULL,
@@ -109,8 +89,9 @@ def setup():
             role		VARCHAR(3)		DEFAULT 'pat',
             username	VARCHAR			DEFAULT NULL,
             password	VARCHAR			DEFAULT NULL
-        );
-        
+        )""")
+
+    c.execute("""\
         CREATE TABLE Prescription
         (
             id			INTEGER(12)		PRIMARY KEY		NOT NULL,
@@ -119,10 +100,11 @@ def setup():
             descr		TEXT,
             max_dose	INTEGER			NOT NULL,
             rec_dose	INTEGER			NOT NULL,
-            min-time	INTEGER			NOT NULL,
+            min_time	INTEGER			NOT NULL,
             amount		INTEGER			NOT NULL
-        );
-        
+        )""")
+
+    c.execute("""\
         CREATE TABLE Inventory
         (
             id 			INTEGER			PRIMARY KEY		NOT NULL,
@@ -130,4 +112,4 @@ def setup():
             type		VARCHAR(3)		NOT NULL,
             capacity	INTEGER			NOT NULL,
             stock		INTEGER			DEFAULT 0
-        );''')
+        )""")
