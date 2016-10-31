@@ -1,10 +1,22 @@
+import sqlite3 as sqlite
+
 class User:
-    def __init__(self, id, rfid, role, username, password):
+    def __init__(self, id=-1, rfid=-1, role="", username="", password=""):
         self._id = id
         self._rfid = rfid
         self._role = role
         self._username = username
         self._password = password
+
+    @staticmethod
+    def parse_raw(row):
+        tempUser = User()
+        tempUser.id(row[0])
+        tempUser.rfid(row[1])
+        tempUser.role(row[2])
+        tempUser.username(row[3])
+        tempUser.password(row[4])
+        return tempUser
 
     @property
     def id(self):
@@ -45,3 +57,4 @@ class User:
     @password.setter
     def password(self, value):
         self._password = value
+
