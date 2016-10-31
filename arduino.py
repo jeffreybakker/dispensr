@@ -1,5 +1,6 @@
 import serial
 import threading
+import hashlib
 
 # Setup Variables
 ARDUINO_COM = "COM3"
@@ -23,6 +24,13 @@ class communicationThread(threading.Thread):
             processData(ser.readline())
 
         print("Exiting " + self.name)
+
+
+# Encrypt RFID-tag
+def encryptRFID(tag):
+    salt = 10  # TODO: replace with database UID or something
+    encrypted = hashlib.sha512(salt + tag)
+    return encrypted
 
 
 # Process received information
