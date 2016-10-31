@@ -48,18 +48,30 @@ def get_users():
 
 
 def get_prescriptions_by_uid(uid):
+    c = get_cursor()
+
+    c.execute('''SELECT * FROM Prescriptions WHERE uid=?''', uid)
     pass
 
 
 def get_prescriptions():
+    c = get_cursor()
+
+    c.execute('''SELECT * FROM Prescriptions''')
     pass
 
 
 def get_inventory_by_iid(iid):
+    c = get_cursor()
+
+    c.execute('''SELECT * FROM Inventory WHERE id=?''', iid)
     pass
 
 
 def get_inventory():
+    c = get_cursor()
+
+    c.execute('''SELECT * FROM Inventory''')
     pass
 
 
