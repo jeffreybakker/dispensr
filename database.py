@@ -8,6 +8,13 @@ conn = None
 
 
 def init(file, first_time=False):
+    """\
+    init(file_name[, first_time])
+
+    Opens the database file for reading and writing.
+    If first_time is set to True it will also run setup the database
+    for use
+    """
     global conn
 
     if conn is not None:
@@ -21,44 +28,52 @@ def init(file, first_time=False):
 
 
 def close():
+    """\
+    Commits all data changes and closes the database
+    """
     global conn
-    conn.commit()
+    commit()
     conn.close()
     conn = None
 
 
 def get_cursor():
+    """\
+    Gets the cursor for the current database-connection
+
+    :return: Returns the cursor for the current database-connection
+    """
     global conn
     return conn.cursor()
 
 
 def commit():
+    """
+    Commits all database changes made since the last commit
+    """
     global conn
     conn.commit()
 
 
 def insert_user(user):
+    """\
+    Inserts an <User> object into the database
+
+    :param user: An object of the <User> type
+    """
     c = get_cursor()
     c.execute(
         '''INSERT INTO User (id, rfid, role, username, password) VALUES (id = ?, rfid = ?, role = ?, username = ?, password = ?)''',
         (user.id, user.rfid, user.role, user.username, user.password))
 
 
-def insert_prescription(prescription):
-    c = get_cursor()
-    c.execute(
-        '''INSERT INTO Prescription (id, uid, medicine_id, descr, max_dose, rec_dose, min_time, amount) VALUES (id = ?, uid = ?, medicine_id = ?, descr = ?, max_dose = ?, rec_dose = ?, min_time = ?, amount = ?)''',
-        (prescription.id, prescription.uid, prescription.medicine_id, prescription.descr, prescription.max_dose, prescription.rec_dose, prescription.min_time, prescription.amount))
-
-
-def insert_inventory(drug):
-    c = get_cursor()
-    c.execute(
-        '''INSERT INTO Inventory (id, name, type, capacity, stock) VALUES (id = ?, name = ?, type = ?, capacity = ?, stock = ?)''',
-        (drug.id, drug.name, drug.type, drug.capacity, drug.stock))
-
-
 def get_user_by_uid(uid):
+    """\
+    Returns an <User> object for the user with the given uid
+
+    :param uid: An unique integer that represents the userID
+    :return: An <User> object for the given uid, None if the user was not found
+    """
     c = get_cursor()
     cursor = c.execute('''SELECT * FROM Users WHERE id=?''', uid)
 
@@ -69,6 +84,12 @@ def get_user_by_uid(uid):
 
 
 def get_user_by_rfid(rfid):
+    """
+    Returns an <User> object for the user with the given rfid
+
+    :param rfid: The ID of the RFID tag of the user
+    :return: An <User> object for the given rfid, None if no user was found
+    """
     c = get_cursor()
     cursor = c.execute('''SELECT * FROM Users WHERE rfid=?''', rfid)
 
@@ -79,6 +100,12 @@ def get_user_by_rfid(rfid):
 
 
 def get_users_by_role(role):
+    """
+    Returns a list of all users with a certain role
+
+    :param role: A String of either 'pat', 'doc' or 'ref'
+    :return:
+    """
     c = get_cursor()
     cursor = c.execute('''SELECT * FROM Users WHERE role=?''', role)
 
@@ -114,10 +141,16 @@ def get_users():
     return res
 
 
-def insert_prescription(id, uid, medicine_id, descr, max_dose, rec_dose, min_time, amount):
+def insert_prescription(prescription):
+    """
+    Inserts an <Prescription> object into the database
+
+    :param prescription: An object of the <Prescription> type
+    """
     c = get_cursor()
-    c.execute('''INSERT INTO Prescriptions (id, uid, medicine_id, descr, max_dose, rec_dose, min_time, amount) VALUES (id = ?, uid = ?, medicine_id = ?, descr = ?, max_dose = ?, rec_dose = ?, min_time = ?, amount = ?)''',
-              (id, uid, medicine_id, descr, max_dose, rec_dose, min_time, amount))
+    c.execute(
+        '''INSERT INTO Prescription (id, uid, medicine_id, descr, max_dose, rec_dose, min_time, amount) VALUES (id = ?, uid = ?, medicine_id = ?, descr = ?, max_dose = ?, rec_dose = ?, min_time = ?, amount = ?)''',
+        (prescription.id, prescription.uid, prescription.medicine_id, prescription.descr, prescription.max_dose, prescription.rec_dose, prescription.min_time, prescription.amount))
 
 
 def get_prescriptions_by_uid(uid):
@@ -142,6 +175,18 @@ def get_prescriptions():
         res.append(Prescription.parse_raw(row))
 
     return res
+
+
+def insert_inventory(drug):
+    """
+    Inserts an <Inventory> object into the database
+
+    :param drug: An object of the <Inventory> type
+    """
+    c = get_cursor()
+    c.execute(
+        '''INSERT INTO Inventory (id, name, type, capacity, stock) VALUES (id = ?, name = ?, type = ?, capacity = ?, stock = ?)''',
+        (drug.id, drug.name, drug.type, drug.capacity, drug.stock))
 
 
 def get_inventory_by_iid(iid):
