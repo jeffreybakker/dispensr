@@ -7,6 +7,7 @@ ARDUINO_COM = "COM3"
 running = False
 threads = []
 
+
 # Communication Thread
 class communicationThread(threading.Thread):
     def __init__(self, threadID, name):
