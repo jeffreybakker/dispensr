@@ -4,11 +4,11 @@ import hashlib
 
 # Setup Variables
 ARDUINO_COM = "COM3"
-connected = False
+running = False
 threads = []
 
 
-# Thread
+# Communication Thread
 class communicationThread(threading.Thread):
     def __init__(self, threadID, name):
         threading.Thread.__init__(self)
@@ -17,12 +17,36 @@ class communicationThread(threading.Thread):
 
     def run(self):
         print("Starting " + self.name)
-        ser = serial.Serial(ARDUINO_COM, 9600)
+        global running;
+        # ser = serial.Serial(ARDUINO_COM, 9600)
 
         # Communication loop
-        while connected:
-            processData(ser.readline())
+        while running:
+            # processData(ser.readline())
+            continue
 
+        # threads.remove(self)
+        print("Exiting " + self.name)
+
+
+# Command prompt Thread
+class promptThread(threading.Thread):
+    def __init__(self, threadID, name):
+        threading.Thread.__init__(self)
+        self.threadID = threadID
+        self.name = name
+
+    def run(self):
+        print("Starting " + self.name)
+        global running
+
+        # Prompt loop
+        while running:
+            cmd = input("> ")
+            if (cmd == "exit"):
+                running = False
+
+        # threads.remove(self)
         print("Exiting " + self.name)
 
 
@@ -41,10 +65,13 @@ def processData(data):
 # Main code
 print("Starting Main Thread")
 
-connected = True
-comThread = communicationThread(1, "Communication thread")
-comThread.start()
-threads.append(comThread)
+running = True
+communication_thread = communicationThread(1, "Communication Tread")
+communication_thread.start()
+threads.append(communication_thread)
+prompt_thread = promptThread(2, "Prompt Thread")
+prompt_thread.start()
+threads.append(prompt_thread)
 
 # Wait for all threads to complete
 for t in threads:
