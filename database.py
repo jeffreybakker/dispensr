@@ -28,6 +28,13 @@ def get_cursor():
     return conn.cursor()
 
 
+def insert_user(id, rfid, role, username, password):
+    c = get_cursor()
+    c.execute(
+        '''INSERT INTO User (id, rfid, role, username, password) VALUES (id = ?, rfid = ?, role = ?, username = ?, password = ?)''',
+        id, rfid, role, username, password)
+
+
 def get_user_by_uid(uid):
     c = get_cursor()
     c.execute('''SELECT * FROM Users WHERE id=?''', uid)
@@ -53,6 +60,13 @@ def get_user_by_login(username, password):
 def get_users():
     c = get_cursor()
     c.execute('''SELECT * FROM Users''')
+
+
+def insert_prescription(id, uid, medicine_id, descr, max_dose, rec_dose, min_time, amount):
+	c = get_cursor()
+
+	c.execute('''INSERT INTO Prescriptions (id, uid, medicine_id, descr, max_dose, rec_dose, min_time, amount) VALUES (id = ?, uid = ?, medicine_id = ?, descr = ?, max_dose = ?, rec_dose = ?, min_time = ?, amount = ?)''',
+			  id, uid, medicine_id, descr, max_dose, rec_dose, min_time, amount)
 
 
 def get_prescriptions_by_uid(uid):
