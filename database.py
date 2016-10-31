@@ -50,33 +50,62 @@ def insert_inventory(drug):
 
 def get_user_by_uid(uid):
     c = get_cursor()
-    c.execute('''SELECT * FROM Users WHERE id=?''', uid)
+    cursor = c.execute('''SELECT * FROM Users WHERE id=?''', uid)
+
+    if cursor.rowCount == 0:
+        return None
+
+    return User.parse_raw(cursor.fetchone())
 
 
 def get_user_by_rfid(rfid):
     c = get_cursor()
-    c.execute('''SELECT * FROM Users WHERE rfid=?''', rfid)
+    cursor = c.execute('''SELECT * FROM Users WHERE rfid=?''', rfid)
+
+    if cursor.rowCount == 0:
+        return None
+
+    return User.parse_raw(cursor.fetchone())
 
 
 def get_users_by_role(role):
     c = get_cursor()
-    c.execute('''SELECT * FROM Users WHERE role=?''', role)
+    cursor = c.execute('''SELECT * FROM Users WHERE role=?''', role)
+
+    res = []
+
+    for row in cursor:
+        res.append(User.parse_raw(row))
+
+    return res
 
 
 def get_user_by_login(username, password):
     c = get_cursor()
-    c.execute(
+    cursor = c.execute(
         '''SELECT * FROM Users WHERE username=? AND password=?''',
         (username, password))
+
+    if cursor.rowCount == 0:
+        return None
+
+    return User.parse_raw(cursor.fetchone())
 
 
 def get_users():
     c = get_cursor()
-    c.execute('''SELECT * FROM Users''')
+    cursor = c.execute('''SELECT * FROM Users''')
+
+    res = []
+
+    for row in cursor:
+        res.append(User.parse_raw(row))
+
+    return res
 
 
 def insert_prescription(id, uid, medicine_id, descr, max_dose, rec_dose, min_time, amount):
-	c = get_cursor()
+    c = get_cursor()
 
 	c.execute('''INSERT INTO Prescriptions (id, uid, medicine_id, descr, max_dose, rec_dose, min_time, amount) VALUES (id = ?, uid = ?, medicine_id = ?, descr = ?, max_dose = ?, rec_dose = ?, min_time = ?, amount = ?)''',
               (id, uid, medicine_id, descr, max_dose, rec_dose, min_time, amount))
@@ -84,22 +113,48 @@ def insert_prescription(id, uid, medicine_id, descr, max_dose, rec_dose, min_tim
 
 def get_prescriptions_by_uid(uid):
     c = get_cursor()
-    c.execute('''SELECT * FROM Prescriptions WHERE uid=?''', uid)
+    cursor = c.execute('''SELECT * FROM Prescriptions WHERE uid=?''', uid)
+
+    res = []
+
+    for row in cursor:
+        res.append(Prescription.parse_raw(row))
+
+    return res
 
 
 def get_prescriptions():
     c = get_cursor()
-    c.execute('''SELECT * FROM Prescriptions''')
+    cursor = c.execute('''SELECT * FROM Prescriptions''')
+
+    res = []
+
+    for row in cursor:
+        res.append(Prescription.parse_raw(row))
+
+    return res
 
 
 def get_inventory_by_iid(iid):
     c = get_cursor()
-    c.execute('''SELECT * FROM Inventory WHERE id=?''', iid)
+    cursor = c.execute('''SELECT * FROM Inventory WHERE id=?''', iid)
+
+    if cursor.rowCount == 0:
+        return None
+
+    return Inventory.parse_raw(cursor.fetchone())
 
 
 def get_inventory():
     c = get_cursor()
-    c.execute('''SELECT * FROM Inventory''')
+    cursor = c.execute('''SELECT * FROM Inventory''')
+
+    res = []
+
+    for row in cursor:
+        res.append(Prescription.parse_raw(row))
+
+    return res
 
 
 def _setup():
