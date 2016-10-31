@@ -9,6 +9,22 @@ class Prescription:
         self._min_time = min_time
         self._amount = amount
 
+    @staticmethod
+    def parse_raw(row):
+        if (row == None or len(row) != 8):
+            return Prescription()
+
+        tempprescription = Prescription()
+        tempprescription.id = row[0]
+        tempprescription.uid = row[1]
+        tempprescription.medicine_id = row[2]
+        tempprescription.descr = row[3]
+        tempprescription.max_dose = row[4]
+        tempprescription.rec_dose = row[5]
+        tempprescription.min_time = row[6]
+        tempprescription.amount = row[7]
+        return tempprescription
+
     @property
     def id(self):
         return self._id
