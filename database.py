@@ -96,10 +96,11 @@ def get_users():
 
 
 def insert_prescription(id, uid, medicine_id, descr, max_dose, rec_dose, min_time, amount):
-	c = get_cursor()
+    c = get_cursor()
 
-	c.execute('''INSERT INTO Prescriptions (id, uid, medicine_id, descr, max_dose, rec_dose, min_time, amount) VALUES (id = ?, uid = ?, medicine_id = ?, descr = ?, max_dose = ?, rec_dose = ?, min_time = ?, amount = ?)''',
-			  id, uid, medicine_id, descr, max_dose, rec_dose, min_time, amount)
+    c.execute(
+        '''INSERT INTO Prescriptions (id, uid, medicine_id, descr, max_dose, rec_dose, min_time, amount) VALUES (id = ?, uid = ?, medicine_id = ?, descr = ?, max_dose = ?, rec_dose = ?, min_time = ?, amount = ?)''',
+        id, uid, medicine_id, descr, max_dose, rec_dose, min_time, amount)
 
 
 def get_prescriptions_by_uid(uid):
