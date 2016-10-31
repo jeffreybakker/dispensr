@@ -27,6 +27,42 @@ def get_cursor():
     return conn.cursor()
 
 
+def get_user_by_uid(uid):
+    pass
+
+
+def get_user_by_rfid(rfid):
+    pass
+
+
+def get_users_by_role(role):
+    pass
+
+
+def get_user_by_login(username, password):
+    pass
+
+
+def get_users():
+    pass
+
+
+def get_prescriptions_by_uid(uid):
+    pass
+
+
+def get_prescriptions():
+    pass
+
+
+def get_inventory_by_iid(iid):
+    pass
+
+
+def get_inventory():
+    pass
+
+
 def setup():
     c = get_cursor()
 
