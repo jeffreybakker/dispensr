@@ -1,4 +1,5 @@
-import sqlite3 as sqlite
+import database
+from prescription import Prescription
 
 class User:
     def __init__(self, id=-1, rfid=-1, role="", username="", password=""):
@@ -14,12 +15,19 @@ class User:
             return User()
 
         tempuser = User()
-        tempuser.id(row[0])
-        tempuser.rfid(row[1])
-        tempuser.role(row[2])
-        tempuser.username(row[3])
-        tempuser.password(row[4])
+        tempuser.id = row[0]
+        tempuser.rfid = row[1]
+        tempuser.role = row[2]
+        tempuser.username = row[3]
+        tempuser.password = row[4]
         return tempuser
+
+    def getPrescriptions(self):
+        cursor = database.get_prescriptions_by_uid(self.id)
+        prescriptions = []
+        for row in cursor:
+            prescriptions.append(Prescription.parse_raw(row))
+        return prescriptions
 
     @property
     def id(self):

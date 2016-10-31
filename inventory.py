@@ -6,6 +6,19 @@ class Inventory:
         self._capacity = capacity
         self._stock = stock
 
+    @staticmethod
+    def parse_raw(row):
+        if (row == None or len(row) != 5):
+            return Inventory()
+
+        tempinventory = Inventory()
+        tempinventory.id = row[0]
+        tempinventory.name = row[1]
+        tempinventory.type = row[2]
+        tempinventory.capacity = row[3]
+        tempinventory.stock = row[4]
+        return tempinventory
+
     @property
     def id(self):
         return self._id
