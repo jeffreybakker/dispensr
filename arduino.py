@@ -24,9 +24,10 @@ class communicationThread(threading.Thread):
 
         print("Exiting " + self.name)
 
+
 # Process received information
 def processData(data):
-    print (data)
+    print(data)
 
 
 # Main code
