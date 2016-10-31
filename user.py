@@ -1,4 +1,4 @@
-class user:
+class User:
     def __init__(self, id, rfid, role, username, password):
         self._id = id
         self._rfid = rfid

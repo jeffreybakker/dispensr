@@ -1,14 +1,15 @@
 import serial
 import threading
 import hashlib
+import user
 
 # Setup Variables
 ARDUINO_COM = "COM3"
 running = False
 threads = []
 
-import user
-hi = user(-1, -1, "NULL", "NULL", "NULL")
+
+hi = User(-1, -1, "NULL", "NULL", "NULL")
 
 # Communication Thread
 class communicationThread(threading.Thread):
