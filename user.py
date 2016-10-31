@@ -14,11 +14,11 @@ class User:
             return User()
 
         tempuser = User()
-        tempuser.id(row[0])
-        tempuser.rfid(row[1])
-        tempuser.role(row[2])
-        tempuser.username(row[3])
-        tempuser.password(row[4])
+        tempuser.id = row[0]
+        tempuser.rfid = row[1]
+        tempuser.role = row[2]
+        tempuser.username = row[3]
+        tempuser.password = row[4]
         return tempuser
 
     @property
