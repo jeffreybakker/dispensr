@@ -10,13 +10,16 @@ class User:
 
     @staticmethod
     def parse_raw(row):
-        tempUser = User()
-        tempUser.id(row[0])
-        tempUser.rfid(row[1])
-        tempUser.role(row[2])
-        tempUser.username(row[3])
-        tempUser.password(row[4])
-        return tempUser
+        if (row == None or len(row) != 5):
+            return User()
+
+        tempuser = User()
+        tempuser.id(row[0])
+        tempuser.rfid(row[1])
+        tempuser.role(row[2])
+        tempuser.username(row[3])
+        tempuser.password(row[4])
+        return tempuser
 
     @property
     def id(self):
