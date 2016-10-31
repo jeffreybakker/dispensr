@@ -32,11 +32,30 @@ def get_cursor():
     return conn.cursor()
 
 
-def insert_user(id, rfid, role, username, password):
+def commit():
+    global conn
+    conn.commit()
+
+
+def insert_user(user):
     c = get_cursor()
     c.execute(
         '''INSERT INTO User (id, rfid, role, username, password) VALUES (id = ?, rfid = ?, role = ?, username = ?, password = ?)''',
-        id, rfid, role, username, password)
+        (user.id, user.rfid, user.role, user.username, user.password))
+
+
+def insert_prescription(prescription):
+    c = get_cursor()
+    c.execute(
+        '''INSERT INTO Prescription (id, uid, medicine_id, descr, max_dose, rec_dose, min_time, amount) VALUES (id = ?, uid = ?, medicine_id = ?, descr = ?, max_dose = ?, rec_dose = ?, min_time = ?, amount = ?)''',
+        (prescription.id, prescription.uid, prescription.medicine_id, prescription.descr, prescription.max_dose, prescription.rec_dose, prescription.min_time, prescription.amount))
+
+
+def insert_inventory(drug):
+    c = get_cursor()
+    c.execute(
+        '''INSERT INTO Inventory (id, name, type, capacity, stock) VALUES (id = ?, name = ?, type = ?, capacity = ?, stock = ?)''',
+        (drug.id, drug.name, drug.type, drug.capacity, drug.stock))
 
 
 def get_user_by_uid(uid):
@@ -75,7 +94,7 @@ def get_user_by_login(username, password):
     c = get_cursor()
     cursor = c.execute(
         '''SELECT * FROM Users WHERE username=? AND password=?''',
-        username, password)
+        (username, password))
 
     if cursor.rowCount == 0:
         return None
@@ -97,10 +116,8 @@ def get_users():
 
 def insert_prescription(id, uid, medicine_id, descr, max_dose, rec_dose, min_time, amount):
     c = get_cursor()
-
-    c.execute(
-        '''INSERT INTO Prescriptions (id, uid, medicine_id, descr, max_dose, rec_dose, min_time, amount) VALUES (id = ?, uid = ?, medicine_id = ?, descr = ?, max_dose = ?, rec_dose = ?, min_time = ?, amount = ?)''',
-        id, uid, medicine_id, descr, max_dose, rec_dose, min_time, amount)
+    c.execute('''INSERT INTO Prescriptions (id, uid, medicine_id, descr, max_dose, rec_dose, min_time, amount) VALUES (id = ?, uid = ?, medicine_id = ?, descr = ?, max_dose = ?, rec_dose = ?, min_time = ?, amount = ?)''',
+              (id, uid, medicine_id, descr, max_dose, rec_dose, min_time, amount))
 
 
 def get_prescriptions_by_uid(uid):
