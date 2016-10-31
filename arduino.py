@@ -5,6 +5,7 @@ import hashlib
 # Setup Variables
 ARDUINO_COM = "COM3"
 running = False
+threads = []
 
 # Communication Thread
 class communicationThread(threading.Thread):
