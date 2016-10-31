@@ -1,5 +1,9 @@
 import sqlite3 as sqlite
 
+from inventory import Inventory
+from prescription import Prescription
+from user import User
+
 conn = None
 
 
@@ -28,11 +32,17 @@ def get_cursor():
     return conn.cursor()
 
 
+def commit():
+    global conn
+    conn.commit()
+
+
 def insert_user(user):
     c = get_cursor()
     c.execute(
         '''INSERT INTO User (id, rfid, role, username, password) VALUES (id = ?, rfid = ?, role = ?, username = ?, password = ?)''',
         (user.id, user.rfid, user.role, user.username, user.password))
+
 
 def insert_prescription(prescription):
     c = get_cursor()
@@ -106,8 +116,7 @@ def get_users():
 
 def insert_prescription(id, uid, medicine_id, descr, max_dose, rec_dose, min_time, amount):
     c = get_cursor()
-
-	c.execute('''INSERT INTO Prescriptions (id, uid, medicine_id, descr, max_dose, rec_dose, min_time, amount) VALUES (id = ?, uid = ?, medicine_id = ?, descr = ?, max_dose = ?, rec_dose = ?, min_time = ?, amount = ?)''',
+    c.execute('''INSERT INTO Prescriptions (id, uid, medicine_id, descr, max_dose, rec_dose, min_time, amount) VALUES (id = ?, uid = ?, medicine_id = ?, descr = ?, max_dose = ?, rec_dose = ?, min_time = ?, amount = ?)''',
               (id, uid, medicine_id, descr, max_dose, rec_dose, min_time, amount))
 
 
