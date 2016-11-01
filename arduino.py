@@ -2,6 +2,7 @@ import serial
 
 MOD_ADLER = 65521
 
+
 def adler32(buf):
     a, b = 1, 0
     for c in buf:
@@ -9,6 +10,7 @@ def adler32(buf):
         b = (b + a) % MOD_ADLER;
 
     return (b << 16) | a
+
 
 KEY = "ZxPEh7ezUDq54pRv"
 
@@ -22,7 +24,7 @@ ser = serial.Serial('/dev/ttyACM0')
 # Reset the remote device
 ser.write(chr(OPCODE_RESET))
 
-@staticmethod
+
 def readUID():
     header = ord(ser.read())
     if header != 0x55:
@@ -38,24 +40,23 @@ def readUID():
 
     t = ord(buf[0])
     l = ord(buf[1])
-    v = buf[2:2+l].encode('hex')
-    cksum = buf[2+l:]
+    v = buf[2:2 + l].encode('hex')
+    cksum = buf[2 + l:]
 
     verify = adler32(buf[:-4])
 
-    print (buf[:-4].encode('hex'))
+    print(buf[:-4].encode('hex'))
 
-    print (cksum.encode('hex'), verify)
+    print(cksum.encode('hex'), verify)
 
     if t == OPCODE_READ:
-        print ('Read card:', v,)
+        print('Read card:', v, )
 
         if v == '22fa0d1d':
-            print ('Accept')
+            print('Accept')
             ser.write(chr(OPCODE_ACCEPT))
         else:
-            print ('Reject')
+            print('Reject')
             ser.write(chr(OPCODE_REJECT))
     else:
-        print ('Unknown opcode:', t)
-
+        print('Unknown opcode:', t)

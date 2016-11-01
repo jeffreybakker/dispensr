@@ -3,7 +3,6 @@ import hashlib
 import arduino
 
 # Setup Variables
-ARDUINO_COM = "COM3"
 running = False
 threads = []
 
@@ -18,7 +17,6 @@ class communicationThread(threading.Thread):
     def run(self):
         print("Starting " + self.name)
         global running;
-        # ser = serial.Serial(ARDUINO_COM, 9600)
 
         # Communication loop
         while running:
@@ -54,12 +52,6 @@ class promptThread(threading.Thread):
 def encryptRFID(tag):
     salt = 10  # TODO: replace with database UID or something
     encrypted = hashlib.sha512(salt + tag)
-    return encrypted
-
-
-# Process received information
-def processData(data):
-    print(data)
 
 
 # Main code
