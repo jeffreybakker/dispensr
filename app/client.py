@@ -1,26 +1,39 @@
 import socket
+import sys
 import tkinter
+from _thread import *
 
 HOST, PORT = "127.0.0.1", 9999
 running = False
 
-sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
+
+# Button callback
 def button_callback():
     print("button clicked")
-    sock.send("getdata".encode())
+    s.send("getdata".encode())
 
-try:
-    sock.connect((HOST, PORT))
-    sock.send("getdata".encode())
-    print(sock.recv(1024))
-    running = True
 
-    #top = tkinter.Tk()
-    #button = tkinter.Button(top, text="getdata", command=button_callback)
-    #button.pack()
-    #top.mainloop()
-
-    #received = sock.recv(1024)
-finally:
+# Connection thread
+def connection_thread(sock):
+    while running:
+        print(sock.recv(1024))
     sock.close()
+
+
+# Main code
+try:
+    s.connect((HOST, PORT))
+    running = True
+    start_new_thread(connection_thread, (s,))
+except socket.error as msg:
+    print('Connection failed. Error Code : ' + str(msg[0]) + ' Message ' + msg[1])
+    sys.exit()
+
+top = tkinter.Tk()
+button = tkinter.Button(top, text="getdata", command=button_callback)
+button.pack()
+top.mainloop()
+
+# received = sock.recv(1024)

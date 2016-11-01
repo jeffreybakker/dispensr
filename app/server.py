@@ -2,7 +2,7 @@ import socket
 import sys
 from _thread import *
 
-HOST = '127.0.0.1'
+HOST = '0.0.0.0'
 PORT = 9999
 running = False
 
@@ -22,7 +22,7 @@ s.listen(5)
 print('Socket now listening')
 
 
-def clientthread(conn):
+def client_thread(conn):
     while True:
         received = conn.recv(1024)
         data = ""
@@ -44,6 +44,6 @@ def clientthread(conn):
 while running:
     conn, addr = s.accept()
     print('Connected with ' + addr[0] + ':' + str(addr[1]))
-    start_new_thread(clientthread, (conn,))
+    start_new_thread(client_thread, (conn,))
 
 s.close()
