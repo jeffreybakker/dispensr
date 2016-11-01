@@ -1,6 +1,6 @@
-import serial
 import threading
 import hashlib
+import arduino
 
 # Setup Variables
 ARDUINO_COM = "COM3"
@@ -22,7 +22,7 @@ class communicationThread(threading.Thread):
 
         # Communication loop
         while running:
-            # processData(ser.readline())
+            arduino.readUID()
             continue
 
         # threads.remove(self)
