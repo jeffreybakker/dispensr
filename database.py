@@ -342,10 +342,12 @@ def _setup():
             uid			INTEGER(11)		NOT NULL,
             medicine_id	INTEGER			NOT NULL,
             descr		TEXT,
-            max_dose	INTEGER			NOT NULL,
+            max_dose	INTEGER	,
             rec_dose	INTEGER			NOT NULL,
             min_time	INTEGER			NOT NULL,
-            amount		INTEGER			NOT NULL
+            amount		INTEGER			NOT NULL,
+            cur_dose    INTEGER         NOT NULL,
+            last_time   BIGINT          NOT NULL
         )""")
 
     c.execute("""\
