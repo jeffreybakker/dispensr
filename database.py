@@ -63,8 +63,35 @@ def insert_user(user):
     """
     c = get_cursor()
     c.execute(
-        '''INSERT INTO User (id, rfid, role, username, password) VALUES (id = ?, rfid = ?, role = ?, username = ?, password = ?)''',
+        '''INSERT INTO Users (id, rfid, role, username, password) VALUES (id = ?, rfid = ?, role = ?, username = ?, password = ?)''',
         (user.id, user.rfid, user.role, user.username, user.password))
+
+
+def update_user(user):
+    """\
+    Updates the userentry in the database
+
+    :param user: The <User> object that has to be updated in the database
+    """
+    c = get_cursor()
+    c.execute(
+        '''UPDATE Users SET rfid=?, role='?', username='?', password='?' WHERE id=?''',
+        (user.rfid, user.role, user.username, user.password))
+
+
+def uid_available(uid):
+    """\
+    Checks if a given UID is possible for usage
+
+    :param uid: An integer representing the UID to be checked
+    :return: A boolean indicating wether the UID is available or not
+    """
+    c = get_cursor()
+    cursor = c.execute('''SELECT id FROM Users WHERE id=?''', uid)
+
+    if cursor.rowCount > 0:
+        return False
+    return True
 
 
 def get_user_by_uid(uid):
@@ -118,6 +145,13 @@ def get_users_by_role(role):
 
 
 def get_user_by_login(username, password):
+    """\
+    Returns the user with the given credentials
+
+    :param username: The username of the requested user
+    :param password: The (encrypted / hashed) password of the requested user
+    :return: The requested user, or None if the credentials are incorrect
+    """
     c = get_cursor()
     cursor = c.execute(
         '''SELECT * FROM Users WHERE username=? AND password=?''',
@@ -130,6 +164,11 @@ def get_user_by_login(username, password):
 
 
 def get_users():
+    """\
+    Returns all the users
+
+    :return: A list of <User> objects
+    """
     c = get_cursor()
     cursor = c.execute('''SELECT * FROM Users''')
 
@@ -141,19 +180,47 @@ def get_users():
     return res
 
 
-def insert_prescription(prescription):
+def first_available_pid():
+    """\
+    Returns the first available pid for the database
+
+    :return: An integer for the first not-taken PID
     """
+    c = get_cursor()
+    cursor = c.execute('''SELECT id FROM Prescription ORDER BY id DESC LIMIT 1''')
+
+    if cursor.rowCount == 0:
+        return 0
+
+    return cursor.fetchone[0] + 1
+
+
+def insert_prescription(prescription):
+    """\
     Inserts an <Prescription> object into the database
 
     :param prescription: An object of the <Prescription> type
     """
     c = get_cursor()
     c.execute(
-        '''INSERT INTO Prescription (id, uid, medicine_id, descr, max_dose, rec_dose, min_time, amount) VALUES (id = ?, uid = ?, medicine_id = ?, descr = ?, max_dose = ?, rec_dose = ?, min_time = ?, amount = ?)''',
-        (prescription.id, prescription.uid, prescription.medicine_id, prescription.descr, prescription.max_dose, prescription.rec_dose, prescription.min_time, prescription.amount))
+        '''INSERT INTO Prescription (id, uid, medicine_id, descr, max_dose, rec_dose, min_time, amount, cur_dose, last_time) VALUES (id = ?, uid = ?, medicine_id = ?, descr = ?, max_dose = ?, rec_dose = ?, min_time = ?, amount = ?, cur_dose = ?, last_time = ?)''',
+        (prescription.id, prescription.uid, prescription.medicine_id, prescription.descr, prescription.max_dose, prescription.rec_dose, prescription.min_time, prescription.amount, prescription.cur_dose, prescription.last_time))
+
+
+def update_prescription(prescription):
+    c = get_cursor()
+    c.execute(
+        '''UPDATE Prescription SET medicine_id=?, descr=? max_dose=?, rec_dose=?, min_time=?, amount=? WHERE id=?''',
+        (prescription.medicine_id, prescription.descr, prescription.max_dose, prescription.rec_dose, prescription.min_time, prescription.amount))
 
 
 def get_prescriptions_by_uid(uid):
+    """\
+    Returns a list of prescriptions for a certain patient
+
+    :param uid: The userID of the patient
+    :return: A list of <Prescription> objects for the given uid
+    """
     c = get_cursor()
     cursor = c.execute('''SELECT * FROM Prescriptions WHERE uid=?''', uid)
 
@@ -166,6 +233,11 @@ def get_prescriptions_by_uid(uid):
 
 
 def get_prescriptions():
+    """\
+    Returns a list of all the prescriptions known in the database
+
+    :return: A list of <Prescription> objects
+    """
     c = get_cursor()
     cursor = c.execute('''SELECT * FROM Prescriptions''')
 
@@ -178,7 +250,7 @@ def get_prescriptions():
 
 
 def insert_inventory(drug):
-    """
+    """\
     Inserts an <Inventory> object into the database
 
     :param drug: An object of the <Inventory> type
@@ -189,7 +261,35 @@ def insert_inventory(drug):
         (drug.id, drug.name, drug.type, drug.capacity, drug.stock))
 
 
+def update_inventory(drug):
+    c = get_cursor()
+    c.execute(
+        '''UPDATE Inventory SET name='?', type='?', capacity=?, stock=? WHERE id=?''',
+        (drug.name, drug,type, drug.capacity, drug.stock, drug.id))
+
+
+def first_available_iid():
+    """\
+    Returns the first available iid for the database
+
+    :return: An integer for the first not-taken IID
+    """
+    c = get_cursor()
+    cursor = c.execute('''SELECT id FROM Inventory ORDER BY id DESC LIMIT 1''')
+
+    if cursor.rowCount == 0:
+        return 0
+
+    return cursor.fetchone[0] + 1
+
+
 def get_inventory_by_iid(iid):
+    """\
+    Returns the <Inventory> object for the given drug ID
+
+    :param iid: The drug ID
+    :return: An <Inventory> object for the given drug ID
+    """
     c = get_cursor()
     cursor = c.execute('''SELECT * FROM Inventory WHERE id=?''', iid)
 
@@ -200,6 +300,11 @@ def get_inventory_by_iid(iid):
 
 
 def get_inventory():
+    """\
+    Returns a list of all <Inventory> objects in the database
+
+    :return: A list of <Inventory> objects
+    """
     c = get_cursor()
     cursor = c.execute('''SELECT * FROM Inventory''')
 
@@ -212,6 +317,9 @@ def get_inventory():
 
 
 def _setup():
+    """\
+    Sets up the database for use
+    """
     c = get_cursor()
     c.execute("DROP TABLE IF EXISTS Inventory")
     c.execute("DROP TABLE IF EXISTS Prescription")
@@ -234,10 +342,12 @@ def _setup():
             uid			INTEGER(11)		NOT NULL,
             medicine_id	INTEGER			NOT NULL,
             descr		TEXT,
-            max_dose	INTEGER			NOT NULL,
+            max_dose	INTEGER	        DEFAULT -1,
             rec_dose	INTEGER			NOT NULL,
             min_time	INTEGER			NOT NULL,
-            amount		INTEGER			NOT NULL
+            amount		INTEGER			NOT NULL,
+            cur_dose    INTEGER         NOT NULL,
+            last_time   BIGINT          NOT NULL
         )""")
 
     c.execute("""\

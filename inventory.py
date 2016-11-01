@@ -8,7 +8,7 @@ class Inventory:
 
     @staticmethod
     def parse_raw(row):
-        if (row == None or len(row) != 5):
+        if row is None or len(row) != 5:
             return Inventory()
 
         tempinventory = Inventory()

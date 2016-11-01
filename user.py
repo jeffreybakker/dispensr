@@ -1,6 +1,7 @@
 import database
 from prescription import Prescription
 
+
 class User:
     def __init__(self, id=-1, rfid=-1, role="", username="", password=""):
         self._id = id
@@ -11,7 +12,7 @@ class User:
 
     @staticmethod
     def parse_raw(row):
-        if (row == None or len(row) != 5):
+        if row is None or len(row) != 5:
             return User()
 
         tempuser = User()
@@ -22,7 +23,7 @@ class User:
         tempuser.password = row[4]
         return tempuser
 
-    def getPrescriptions(self):
+    def get_prescriptions(self):
         cursor = database.get_prescriptions_by_uid(self.id)
         prescriptions = []
         for row in cursor:

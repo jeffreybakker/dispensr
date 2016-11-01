@@ -14,15 +14,15 @@ def adler32(buf):
 
 KEY = "ZxPEh7ezUDq54pRv"
 
-OPCODE_READ = 0x00
-OPCODE_ACCEPT = 0x01
-OPCODE_REJECT = 0x02
-OPCODE_RESET = 0xFF
+OPCODE_READ = bytes([0x00])
+OPCODE_ACCEPT = bytes([0x01])
+OPCODE_REJECT = bytes([0x02])
+OPCODE_RESET = bytes([0xFF])
 
 ser = serial.Serial('/dev/ttyACM0')
 
 # Reset the remote device
-ser.write(chr(OPCODE_RESET))
+ser.write(OPCODE_RESET)
 
 
 def readUID():
