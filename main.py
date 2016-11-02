@@ -2,6 +2,7 @@ import threading
 import hashlib
 import arduino
 import control
+import database
 
 # Setup Variables
 running = False
@@ -18,12 +19,20 @@ class communicationThread(threading.Thread):
     def run(self):
         print("Starting " + self.name)
         global running
+        database.init("data/database.db")
 
         # Communication loop
         ard = arduino.Interface(b'ZxPEh7ezUDq54pRv', 'COM3')
         while running:
             uid = ard.read_rfid()
-            print(control.get_prescriptions(control.get_user(uid)))
+
+            user = control.get_user(uid)
+
+            if user is None:
+                pass
+            else:
+                print(uid, type(uid))
+                print(control.get_prescriptions(control.get_user(uid)))
 
             if uid == 586812701:
                 ard.send_accept()
@@ -32,6 +41,7 @@ class communicationThread(threading.Thread):
 
         # threads.remove(self)
         print("Exiting " + self.name)
+        database.close()
 
 
 # Command prompt Thread

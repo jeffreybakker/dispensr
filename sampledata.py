@@ -20,7 +20,7 @@ drugs = [
     Inventory(3, "Asperine", "pil", 500, 429)
 ]
 
-database.init("data/database.db")
+database.init("data/database.db", True)
 
 for user in users:
     database.insert_user(user)
