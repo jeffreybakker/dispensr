@@ -24,29 +24,42 @@ class communicationThread(threading.Thread):
         # Communication loop
         ard = arduino.Interface(b'ZxPEh7ezUDq54pRv', 'COM3')
         while running:
-            uid = ard.read_rfid()
-
-            user = control.get_user(uid)
-
-            if user is None:
-                print('User not found')
-                ard.send_reject()
-            else:
+            if self._scanned_card(ard.read_rfid()):
                 ard.send_accept()
-                prescriptions = control.get_prescriptions(user)
-
-                print("Found", len(prescriptions), "prescriptions:")
-
-                for pres in prescriptions:
-                    drug = control.get_drug_by_prescripiton(pres)
-                    print(drug.name, pres.descr)
-
-                print(prescriptions)
-
+            else:
+                ard.send_reject()
 
         # threads.remove(self)
         print("Exiting " + self.name)
         database.close()
+
+    @staticmethod
+    def _scanned_card(rfid):
+        user = control.get_user(rfid)
+
+        if user is None:
+            print("No user found with the RFID:", rfid)
+            return False
+
+        if user.role == 'pat':
+            prescriptions = control.get_prescriptions(user)
+
+            if len(prescriptions) > 0:
+                print("Dispensing", len(prescriptions), "medicines")
+
+                for pres in prescriptions:
+                    drug = control.get_drug_by_prescripiton(pres)
+                    print(drug.name)
+                    print("\tAmount:\t" + pres.amount)
+                    print("\tDescription:\t" + pres.descr)
+
+            else:
+                print("No prescriptions available for consumption at this moment")
+
+        else:   # For doctor or nurse, assuming that they will only want to access the machine in order to refill it
+            control.inventory_refill()
+
+        return True
 
 
 # Command prompt Thread
