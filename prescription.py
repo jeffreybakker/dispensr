@@ -143,7 +143,7 @@ class Prescription:
 
     @property
     def duration(self):
-        return self._duraiton
+        return self._duration
 
     @duration.setter
     def duration(self, value):
