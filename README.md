@@ -9,5 +9,7 @@ PLEASE NOTE: Before running any of these programs, the sampledata must be loaded
 
 NOTE 2: If you want to run the client, please make sure you have the server running on the background first.
 
+NOTE 3: You'll need serial in order to run the programs
+
 # Current functionality
 At this moment in time, the function of some of the programs are somewhat limited, for example, the main program does output everything according to the requirements, but it still outputs some debugging messages. Also the server and client applications aren't completed yet.
