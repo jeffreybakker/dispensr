@@ -203,15 +203,15 @@ def insert_prescription(prescription):
     """
     c = get_cursor()
     c.execute(
-        '''INSERT INTO Prescription (id, uid, medicine_id, descr, max_dose, rec_dose, min_time, amount, cur_dose, last_time, doctor, date, dur_din, duration) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''',
-        (prescription.id, prescription.uid, prescription.medicine_id, prescription.descr, prescription.max_dose, prescription.rec_dose, prescription.min_time, prescription.amount, prescription.cur_dose, prescription.last_time, prescription.doctor, prescription.date, prescription.dur_din, prescription.duration))
+        '''INSERT INTO Prescription (id, uid, medicine_id, descr, max_dose, rec_dose, min_time, amount, cur_dose, last_time, doctor, date, duration) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''',
+        (prescription.id, prescription.uid, prescription.medicine_id, prescription.descr, prescription.max_dose, prescription.rec_dose, prescription.min_time, prescription.amount, prescription.cur_dose, prescription.last_time, prescription.doctor, prescription.date, prescription.duration))
 
 
 def update_prescription(prescription):
     c = get_cursor()
     c.execute(
-        '''UPDATE Prescription SET medicine_id=?, descr=?, max_dose=?, rec_dose=?, min_time=?, amount=?, cur_dose=?, last_time=?, doctor=?, date=?, dur_din=?, duration=? WHERE id=?''',
-        (prescription.medicine_id, prescription.descr, prescription.max_dose, prescription.rec_dose, prescription.min_time, prescription.amount, prescription.cur_dose, prescription.last_time, prescription.doctor, prescription.date, prescription.dur_din, prescription.duration))
+        '''UPDATE Prescription SET medicine_id=?, descr=?, max_dose=?, rec_dose=?, min_time=?, amount=?, cur_dose=?, last_time=?, doctor=?, date=?, duration=? WHERE id=?''',
+        (prescription.medicine_id, prescription.descr, prescription.max_dose, prescription.rec_dose, prescription.min_time, prescription.amount, prescription.cur_dose, prescription.last_time, prescription.doctor, prescription.date, prescription.duration))
 
 
 def get_prescriptions_by_uid(uid):
@@ -349,9 +349,8 @@ def _setup():
             cur_dose    INTEGER         NOT NULL,
             last_time   BIGINT          NOT NULL,
             doctor      INTEGER         NOT NULL,
-            date        BIGINT         NOT NULL,
-            dur_din     BOOLEAN         DEFAULT FALSE,
-            duration    BIGINT          DEFAULT -1
+            date        BIGINT          NOT NULL,
+            duration    BIGINT          DEFAULT 3153600000
         )""")
 
     c.execute("""\
