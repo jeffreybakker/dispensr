@@ -1,4 +1,4 @@
-import database
+# import database
 from prescription import Prescription
 
 
@@ -24,6 +24,7 @@ class User:
         return tempuser
 
     def get_prescriptions(self):
+        import database
         cursor = database.get_prescriptions_by_uid(self.id)
         prescriptions = []
         for row in cursor:

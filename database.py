@@ -63,7 +63,7 @@ def insert_user(user):
     """
     c = get_cursor()
     c.execute(
-        '''INSERT INTO Users (id, rfid, role, username, password) VALUES (id = ?, rfid = ?, role = ?, username = ?, password = ?)''',
+        '''INSERT INTO Users (id, rfid, role, username, password) VALUES (?, ?, ?, ?, ?)''',
         (user.id, user.rfid, user.role, user.username, user.password))
 
 
@@ -203,15 +203,15 @@ def insert_prescription(prescription):
     """
     c = get_cursor()
     c.execute(
-        '''INSERT INTO Prescription (id, uid, medicine_id, descr, max_dose, rec_dose, min_time, amount, cur_dose, last_time) VALUES (id = ?, uid = ?, medicine_id = ?, descr = ?, max_dose = ?, rec_dose = ?, min_time = ?, amount = ?, cur_dose = ?, last_time = ?)''',
+        '''INSERT INTO Prescription (id, uid, medicine_id, descr, max_dose, rec_dose, min_time, amount, cur_dose, last_time) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''',
         (prescription.id, prescription.uid, prescription.medicine_id, prescription.descr, prescription.max_dose, prescription.rec_dose, prescription.min_time, prescription.amount, prescription.cur_dose, prescription.last_time))
 
 
 def update_prescription(prescription):
     c = get_cursor()
     c.execute(
-        '''UPDATE Prescription SET medicine_id=?, descr=? max_dose=?, rec_dose=?, min_time=?, amount=? WHERE id=?''',
-        (prescription.medicine_id, prescription.descr, prescription.max_dose, prescription.rec_dose, prescription.min_time, prescription.amount))
+        '''UPDATE Prescription SET medicine_id=?, descr=?, max_dose=?, rec_dose=?, min_time=?, amount=?, cur_dose=?, last_time=? WHERE id=?''',
+        (prescription.medicine_id, prescription.descr, prescription.max_dose, prescription.rec_dose, prescription.min_time, prescription.amount, prescription.cur_dose, prescription.last_time))
 
 
 def get_prescriptions_by_uid(uid):
@@ -257,7 +257,7 @@ def insert_inventory(drug):
     """
     c = get_cursor()
     c.execute(
-        '''INSERT INTO Inventory (id, name, type, capacity, stock) VALUES (id = ?, name = ?, type = ?, capacity = ?, stock = ?)''',
+        '''INSERT INTO Inventory (id, name, type, capacity, stock) VALUES (?, ?, ?, ?, ?)''',
         (drug.id, drug.name, drug.type, drug.capacity, drug.stock))
 
 
