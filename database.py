@@ -351,7 +351,7 @@ def _setup():
         )""")
 
     c.execute("""\
-        CREATE TABLE Prescription
+        CREATE TABLE Prescriptions
         (
             id			INTEGER(12)		PRIMARY KEY		NOT NULL,
             uid			INTEGER(11)		NOT NULL,
