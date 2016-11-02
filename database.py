@@ -347,7 +347,11 @@ def _setup():
             min_time	INTEGER			NOT NULL,
             amount		INTEGER			NOT NULL,
             cur_dose    INTEGER         NOT NULL,
-            last_time   BIGINT          NOT NULL
+            last_time   BIGINT          NOT NULL,
+            pr_doctor   INTEGER         NOT NULL,
+            pr_date     INTEGER         NOT NULL,
+            dur_din     BOOLEAN         DEFAULT FALSE,
+            duration    BIGINT          DEFAULT -1
         )""")
 
     c.execute("""\

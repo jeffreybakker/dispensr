@@ -1,5 +1,5 @@
 class Prescription:
-    def __init__(self, id, uid, medicine_id, descr, max_dose, rec_dose, min_time, amount, cur_dose, last_time):
+    def __init__(self, id, uid, medicine_id, descr, max_dose, rec_dose, min_time, amount, cur_dose, last_time, pr_doctor, pr_date, dur_din, duration):
         self._id = id
         self._uid = uid
         self._medicine_id = medicine_id
@@ -10,10 +10,14 @@ class Prescription:
         self._amount = amount
         self._cur_dose = cur_dose
         self._last_time = last_time
+        self._pr_doctor = pr_doctor
+        self._pr_date = pr_date
+        self._dur_din = dur_din
+        self._duration = duration
 
     @staticmethod
     def parse_raw(row):
-        if row is None or len(row) != 8:
+        if row is None or len(row) != 14:
             return Prescription()
 
         tempprescription = Prescription()
@@ -27,6 +31,10 @@ class Prescription:
         tempprescription.amount = row[7]
         tempprescription.cur_dose = row[8]
         tempprescription.last_time = row[9]
+        tempprescription.pr_doctor = row[10]
+        tempprescription.pr_date = row[11]
+        tempprescription.dur_din = row[12]
+        tempprescription.duration = row[13]
         return tempprescription
 
     @property
@@ -97,7 +105,7 @@ class Prescription:
     def cur_dose(self):
         return self._cur_dose
 
-    @min_time.setter
+    @cur_dose.setter
     def cur_dose(self, value):
         self._cur_dose = value
 
@@ -105,6 +113,38 @@ class Prescription:
     def last_time(self):
         return self._last_time
 
-    @amount.setter
+    @last_time.setter
     def last_time(self, value):
         self._last_time = value
+
+    @property
+    def pr_doctor(self):
+        return self._pr_doctor
+
+    @pr_doctor.setter
+    def pr_doctor(self, value):
+        self._pr_doctor = value
+
+    @property
+    def pr_date(self):
+        return self._pr_date
+
+    @pr_date.setter
+    def pr_date(self, value):
+        self._pr_date = value
+
+    @property
+    def dur_din(self):
+        return self._dur_din
+
+    @dur_din.setter
+    def dur_din(self, value):
+        self._dur_din = value
+
+    @property
+    def duration(self):
+        return self._duraiton
+
+    @duration.setter
+    def duration(self, value):
+        self._duration = value
