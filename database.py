@@ -20,7 +20,7 @@ def init(file, first_time=False):
     if conn is not None:
         close()
 
-    conn = sqlite.connect(file)
+    conn = sqlite.connect(file, check_same_thread=False)
 
     if first_time:
         _setup()

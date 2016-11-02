@@ -7,6 +7,7 @@ import tkinter
 from tkinter import messagebox
 from ui_login import UILogin
 from ui_loading import UILoading
+from ui_main import UIMain
 
 HOST, PORT = "127.0.0.1", 9999
 running = False
@@ -21,7 +22,8 @@ def encrypt(toencr):
 
 
 def mainapp():
-    ui_loading_root.destroy()
+    ui_main = UIMain()
+    pass
 
 
 
@@ -50,15 +52,16 @@ class connection_thread(threading.Thread):
 
             if json_data != "":
                 data = json.loads(json_data)
+                print(json_data)
 
-                if data["command"]=="authlogin":
-                    if data["auth"]=="true":
+                if data["command"] == "authlogin":
+                    if data["auth"] == "True":
                         mainapp()
-                    else:
-                        messagebox.showerror("Error", "Authentication failed")
-                        sys.exit()
+                    elif data["auth"] == "False":
+                        #messagebox.showerror("Error", "Authentication failed")
+                        print("Authentication failed")
+                        running = False
 
-        self.sock.close()
         print("Exiting " + self.name)
 
 
@@ -74,8 +77,8 @@ connthread = connection_thread(1, "Connection Thread", s)
 connthread.start()
 
 ui_login = UILogin(s)
-ui_loading_root = tkinter.Tk()
-ui_loading = UILoading(ui_loading_root)
+#ui_loading_root = tkinter.Tk()
+#ui_loading = UILoading(ui_loading_root)
 
 connthread.join()
 s.shutdown(1)

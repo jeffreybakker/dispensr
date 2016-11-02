@@ -19,7 +19,7 @@ def authenticate(username, password):
     print(username + "," + password)
     user = database.get_user_by_login(username, password)
 
-    if not user.id:
+    if not user:
         return "False"
     else:
         return "True"
@@ -51,7 +51,8 @@ def client_thread(conn):
                 tosend["auth"] = authenticate(data["username"], data["password"])
                 if (tosend["auth"] == "True"):
                     auth = True
-                s.send(json.dumps(tosend).encode())
+                print("Sending: "+json.dumps(tosend))
+                conn.send(json.dumps(tosend).encode())
 
     # Properly close the connection
     conn.shutdown(1)
