@@ -1,6 +1,7 @@
 import threading
 import hashlib
 import arduino
+import control
 
 # Setup Variables
 running = False
@@ -19,9 +20,15 @@ class communicationThread(threading.Thread):
         global running
 
         # Communication loop
+        ard = arduino.Interface(b'ZxPEh7ezUDq54pRv')
         while running:
-            arduino.readUID()
-            continue
+            uid = ard.read_rfid()
+            print(control.get_prescriptions(uid))
+
+            if uid == 586812701:
+                ard.send_accept()
+            else:
+                ard.send_reject()
 
         # threads.remove(self)
         print("Exiting " + self.name)
