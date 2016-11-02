@@ -29,15 +29,13 @@ class communicationThread(threading.Thread):
             user = control.get_user(uid)
 
             if user is None:
-                pass
+                print('User not found')
+                ard.send_reject()
             else:
+                ard.send_accept()
                 print(uid, type(uid))
                 print(control.get_prescriptions(control.get_user(uid)))
 
-            if uid == 586812701:
-                ard.send_accept()
-            else:
-                ard.send_reject()
 
         # threads.remove(self)
         print("Exiting " + self.name)
