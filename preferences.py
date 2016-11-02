@@ -44,14 +44,14 @@ class Preferences:
         else:
             print("File does not exist")
 
-    def get_preference(self, key):
+    def get_preference(self, key, default=None):
         """
         Gets the preference for the given key
 
         :param key: The key of the preference
         :return: The value that comes with the key
         """
-        return self.list.get(key, -1)
+        return self.list.get(key, default)
 
     def set_preference(self, key, value):
         """

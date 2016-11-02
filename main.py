@@ -3,10 +3,25 @@ import hashlib
 import arduino
 import control
 import database
+from preferences import Preferences
 
 # Setup Variables
+pref = Preferences()
 running = False
 threads = []
+
+# Check if this is the first-run
+if pref.get_preference("first_time", True):
+    import sampledata
+
+    # Set some default preferences
+    pref.set_preference("first_time", False)
+    pref.set_preference("database", "data/database.db")
+    pref.set_preference("arduino_port", "COM3")
+    pref.set_preference("notifications", False)
+
+    # Create the database and fill it with some data
+    sampledata.init()
 
 
 # Communication Thread
@@ -17,12 +32,13 @@ class communicationThread(threading.Thread):
         self.name = name
 
     def run(self):
+        global running, pref
+
         print("Starting " + self.name)
-        global running
-        database.init("data/database.db")
+        database.init(pref.get_preference("database"))
 
         # Communication loop
-        ard = arduino.Interface(b'ZxPEh7ezUDq54pRv', 'COM3')
+        ard = arduino.Interface(b'ZxPEh7ezUDq54pRv', pref.get_preference("arduino_port"))
         while running:
             if self._scanned_card(ard.read_rfid()):
                 ard.send_accept()
