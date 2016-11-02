@@ -16,9 +16,11 @@
 #define SS_PIN 10
 #define RST_PIN 9
 
-#define KEY "ZxPEh7ezUDq54pRv"
+unsigned char *KEY = (unsigned char *) "ZxPEh7ezUDq54pRv";
 
-const int MOD_ADLER = 65521;
+#define MOD_ADLER 65521
+
+#define PROTOCOL_VERSION 0x01
 
 enum OPCODE : byte {
   OP_READ = 0x00,
@@ -35,30 +37,67 @@ enum STATE {
   STATE_RESET,
 };
 
-union hash_t {
-  uint32_t num;
-  byte bytes[4];
-};
-
 MFRC522 mfrc522(SS_PIN, RST_PIN);	// Create MFRC522 instance.
+
+byte lcnt = 0;
+byte rcnt = 0;
 
 STATE state = STATE_RESET;
 
-hash_t adler32(char *data, size_t len) {
-    uint32_t a = 1, b = 0;
-    size_t index;
-    
-    /* Process each byte of the data in order */
-    for (index = 0; index < len; ++index)
-    {
-        a = (a + data[index]) % MOD_ADLER;
-        b = (b + a) % MOD_ADLER;
-    }
+uint32_t adler32(unsigned char *data, uint8_t len) {
+  uint32_t a = 1, b = 0;
+  uint8_t index;
+  
+  /* Process each byte of the data in order */
+  for (index = 0; index < len; ++index)
+  {
+      a = (a + data[index]) % MOD_ADLER;
+      b = (b + a) % MOD_ADLER;
+  }
+  
+  return ((b << 16) | a);
+}
 
-    hash_t val;
-    val.num = ((b << 16) | a);
-    
-    return val;
+uint32_t hmac(unsigned char *data, uint8_t len) {
+  unsigned char buf[260];
+  uint32_t key = adler32(KEY, 16); // Assume the length(key) > 4
+  uint32_t o_key_pad = 0x5C5C5C5C ^ key;
+  uint32_t i_key_pad = 0x36363636 ^ key;
+
+  buf[0] = (i_key_pad >> 24) & 0xFF;
+  buf[1] = (i_key_pad >> 16) & 0xFF;
+  buf[2] = (i_key_pad >>  8) & 0xFF;
+  buf[3] = (i_key_pad >>  0) & 0xFF;
+
+  for (int i=0; i<len; ++i) {
+    buf[4+i] = data[i];
+  }
+
+  uint32_t hash = adler32(buf, len + 4);
+
+  buf[0] = (o_key_pad >> 24) & 0xFF;
+  buf[1] = (o_key_pad >> 16) & 0xFF;
+  buf[2] = (o_key_pad >>  8) & 0xFF;
+  buf[3] = (o_key_pad >>  0) & 0xFF;
+  
+  buf[4] = (hash >> 24) & 0xFF;
+  buf[5] = (hash >> 16) & 0xFF;
+  buf[6] = (hash >>  8) & 0xFF;
+  buf[7] = (hash >>  0) & 0xFF;
+
+  return adler32(buf, 8);
+}
+
+void encrypt(unsigned char *data, uint8_t len) {
+  for (int i=0; i<len; ++i) {
+    data[i] ^= KEY[i % 16];
+  }
+}
+
+void decrypt(unsigned char *data, uint8_t len) {
+  for (int i=0; i<len; ++i) {
+    data[i] ^= KEY[i % 16];
+  }
 }
 
 void setup() {
@@ -66,71 +105,111 @@ void setup() {
 	SPI.begin();			// Init SPI bus
 	mfrc522.PCD_Init();	// Init MFRC522 card
 
+  Serial.setTimeout(5000);
+
   pinMode(2, OUTPUT);
   pinMode(3, OUTPUT);
 }
 
 void s_read() {   
-    if ( ! mfrc522.PICC_IsNewCardPresent()) {
-      return;
-    }
-  
-    // Select one of the cards
-    if ( ! mfrc522.PICC_ReadCardSerial()) {
-      return;
-    }
+  if ( ! mfrc522.PICC_IsNewCardPresent()) {
+    return;
+  }
 
-  char buf[128];
-  byte len = 6;
+  // Select one of the cards
+  if ( ! mfrc522.PICC_ReadCardSerial()) {
+    return;
+  }
 
-  buf[0] = 0x00;
-  buf[1] = 4;
-  buf[2] = mfrc522.uid.uidByte[0];
-  buf[3] = mfrc522.uid.uidByte[1];
-  buf[4] = mfrc522.uid.uidByte[2];
-  buf[5] = mfrc522.uid.uidByte[3];
+  unsigned char buf[128];
 
-  hash_t hash = adler32(buf, len);
+  buf[0] = PROTOCOL_VERSION;
+  buf[1] = lcnt; // Local counter
+  buf[2] = 6; // Data length
+  buf[3] = OP_READ;
+  buf[4] = 4; // Value length
+  buf[5] = mfrc522.uid.uidByte[0];
+  buf[6] = mfrc522.uid.uidByte[1];
+  buf[7] = mfrc522.uid.uidByte[2];
+  buf[8] = mfrc522.uid.uidByte[3];
 
-  buf[6] = hash.bytes[3];
-  buf[7] = hash.bytes[2];
-  buf[8] = hash.bytes[1];
-  buf[9] = hash.bytes[0];
+  encrypt(&buf[3], 6);
 
-  len += 4;
+  uint32_t sig = hmac(buf, 9);
 
-  Serial.print((char) 0x55);
-  Serial.print((char) len);
+  buf[9]  = (sig >> 24) & 0xFF;
+  buf[10] = (sig >> 16) & 0xFF;
+  buf[11] = (sig >>  8) & 0xFF;
+  buf[12] = (sig >>  0) & 0xFF;
 
-  for (int i = 0; i < len; ++i) {
-    byte encrypt = ((byte) buf[i]) ^ KEY[i % 16];
-    Serial.print((char) encrypt);
+  byte len = 13;
+
+  for (int i=0; i<len; ++i) {
+    Serial.print((char) buf[i]);
   }
 
   state = STATE_WAIT_AUTH;
+  //delay(1000);
 }
 
 void s_wait_auth() {
-  if (Serial.available() == 0) {
+  if (Serial.available() < 3) {
     return;
   }
   
-  byte t = Serial.read();
+  unsigned char buf[260];
+  Serial.readBytes(buf, 3);
+  Serial.readBytes(&buf[3], buf[2] + 4);
+
+  byte len = 3 + buf[2];
+
+  uint32_t signature = buf[len];
+  signature = (signature << 8) | buf[len+1];
+  signature = (signature << 8) | buf[len+2];
+  signature = (signature << 8) | buf[len+3];
   
-  switch(t) {
+  uint32_t verify = hmac(buf, len);
+
+  // Invalid signature
+  if (signature != verify) {
+    digitalWrite(2, HIGH);
+    digitalWrite(3, HIGH);
+    delay(150);
+    digitalWrite(2, LOW);
+    digitalWrite(3, LOW);
+    delay(150);
+    digitalWrite(2, HIGH);
+    digitalWrite(3, HIGH);
+    delay(150);
+    digitalWrite(2, LOW);
+    digitalWrite(3, LOW);
+    delay(150);
+    digitalWrite(2, HIGH);
+    digitalWrite(3, HIGH);
+    delay(150);
+    digitalWrite(2, LOW);
+    digitalWrite(3, LOW);
+    
+    state = STATE_RESET;
+    
+    return;
+  }
+
+  decrypt(&buf[3], buf[2]);
+  
+  switch(buf[3]) {
     case OP_ACCEPT:
       state = STATE_ACCEPT;
       break;
     case OP_REJECT:
       state = STATE_REJECT;
       break;
-    case OP_RESET:
-      state = STATE_RESET; 
-      break;
+    default:
+      state = STATE_RESET;
   }
 }
 
-void s_accept() {
+void s_accept() {  
   digitalWrite(2, HIGH);
   delay(1000);
   digitalWrite(2, LOW);
@@ -142,7 +221,7 @@ void s_reject() {
   digitalWrite(3, HIGH);
   delay(1000);
   digitalWrite(3, LOW);
-
+  
   state = STATE_RESET;
 }
 
@@ -168,7 +247,7 @@ void loop() {
     case STATE_REJECT:
       s_reject(); break;
     default:
-      state = STATE_READ;
+      state = STATE_RESET;
 	}
 }
 
