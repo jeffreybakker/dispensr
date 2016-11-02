@@ -3,8 +3,24 @@ import calendar
 import time
 
 
+def add_new_user(user):
+    database.insert_user(user)
+
+
+def update_user(user):
+    database.update_user(user)
+
+
 def get_user(rfid):
     return database.get_user_by_rfid(rfid)
+
+
+def add_new_prescription(prescription):
+    database.insert_prescription(prescription)
+
+
+def update_prescriptoin(prescription):
+    database.update_prescription(prescription)
 
 
 def get_prescriptions(user):
@@ -37,6 +53,14 @@ def get_prescriptions(user):
     database.commit()
 
     return res
+
+
+def add_new_inventory(drug):
+    database.insert_inventory(drug)
+
+
+def update_inventory(drug):
+    database.update_inventory(drug)
 
 
 def get_inventory():

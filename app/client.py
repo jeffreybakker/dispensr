@@ -21,7 +21,8 @@ def encrypt(toencr):
 
 
 def mainapp():
-    return None
+    ui_loading_root.destroy()
+
 
 
 # Connection thread
