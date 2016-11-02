@@ -196,7 +196,7 @@ def first_available_pid():
     :return: An integer for the first not-taken PID
     """
     c = get_cursor()
-    cursor = c.execute('''SELECT id FROM Prescriptions ORDER BY id DESC LIMIT 1''')
+    cursor = c.execute('''SELECT id FROM Prescription ORDER BY id DESC LIMIT 1''')
 
     row = cursor.fetchone()
 
@@ -214,15 +214,15 @@ def insert_prescription(prescription):
     """
     c = get_cursor()
     c.execute(
-        '''INSERT INTO Prescriptions (id, uid, medicine_id, descr, max_dose, rec_dose, min_time, amount, cur_dose, last_time, doctor, date, duration) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''',
-        (prescription.id, prescription.uid, prescription.medicine_id, prescription.descr, prescription.max_dose, prescription.rec_dose, prescription.min_time, prescription.amount, prescription.cur_dose, prescription.last_time, prescription.doctor, prescription.date, prescription.duration))
+        '''INSERT INTO Prescription (id, uid, medicine_id, descr, max_dose, min_time, amount, cur_dose, last_time, doctor, date, duration) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''',
+        (prescription.id, prescription.uid, prescription.medicine_id, prescription.descr, prescription.max_dose, prescription.min_time, prescription.amount, prescription.cur_dose, prescription.last_time, prescription.doctor, prescription.date, prescription.duration))
 
 
 def update_prescription(prescription):
     c = get_cursor()
     c.execute(
-        '''UPDATE Prescriptions SET medicine_id=?, descr=?, max_dose=?, rec_dose=?, min_time=?, amount=?, cur_dose=?, last_time=?, doctor=?, date=?, duration=? WHERE id=?''',
-        (prescription.medicine_id, prescription.descr, prescription.max_dose, prescription.rec_dose, prescription.min_time, prescription.amount, prescription.cur_dose, prescription.last_time, prescription.doctor, prescription.date, prescription.duration))
+        '''UPDATE Prescription SET medicine_id=?, descr=?, max_dose=?, min_time=?, amount=?, cur_dose=?, last_time=?, doctor=?, date=?, duration=? WHERE id=?''',
+        (prescription.medicine_id, prescription.descr, prescription.max_dose, prescription.min_time, prescription.amount, prescription.cur_dose, prescription.last_time, prescription.doctor, prescription.date, prescription.duration))
 
 
 def get_prescriptions_by_uid(uid):
@@ -351,14 +351,13 @@ def _setup():
         )""")
 
     c.execute("""\
-        CREATE TABLE Prescriptions
+        CREATE TABLE Prescription
         (
             id			INTEGER(12)		PRIMARY KEY		NOT NULL,
             uid			INTEGER(11)		NOT NULL,
             medicine_id	INTEGER			NOT NULL,
             descr		TEXT,
             max_dose	INTEGER	        DEFAULT -1,
-            rec_dose	INTEGER			NOT NULL,
             min_time	INTEGER			NOT NULL,
             amount		INTEGER			NOT NULL,
             cur_dose    INTEGER         NOT NULL,

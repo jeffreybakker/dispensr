@@ -1,11 +1,10 @@
 class Prescription:
-    def __init__(self, id, uid, medicine_id, descr, max_dose, rec_dose, min_time, amount, cur_dose, last_time, pr_doctor, pr_date, duration):
+    def __init__(self, id, uid, medicine_id, descr, max_dose, min_time, amount, cur_dose, last_time, pr_doctor, pr_date, duration):
         self._id = id
         self._uid = uid
         self._medicine_id = medicine_id
         self._descr = descr
         self._max_dose = max_dose
-        self._rec_dose = rec_dose
         self._min_time = min_time
         self._amount = amount
         self._cur_dose = cur_dose
@@ -16,7 +15,7 @@ class Prescription:
 
     @staticmethod
     def parse_raw(row):
-        if row is None or len(row) != 13:
+        if row is None or len(row) != 12:
             return Prescription()
 
         tempprescription = Prescription()
@@ -25,14 +24,13 @@ class Prescription:
         tempprescription.medicine_id = row[2]
         tempprescription.descr = row[3]
         tempprescription.max_dose = row[4]
-        tempprescription.rec_dose = row[5]
-        tempprescription.min_time = row[6]
-        tempprescription.amount = row[7]
-        tempprescription.cur_dose = row[8]
-        tempprescription.last_time = row[9]
-        tempprescription.doctor = row[10]
-        tempprescription.date = row[11]
-        tempprescription.duration = row[12]
+        tempprescription.min_time = row[5]
+        tempprescription.amount = row[6]
+        tempprescription.cur_dose = row[7]
+        tempprescription.last_time = row[8]
+        tempprescription.doctor = row[9]
+        tempprescription.date = row[10]
+        tempprescription.duration = row[11]
         return tempprescription
 
     @property
@@ -74,14 +72,6 @@ class Prescription:
     @max_dose.setter
     def max_dose(self, value):
         self._max_dose = value
-
-    @property
-    def rec_dose(self):
-        return self._rec_dose
-
-    @rec_dose.setter
-    def rec_dose(self, value):
-        self._rec_dose = value
 
     @property
     def min_time(self):
