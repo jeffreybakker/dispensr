@@ -55,7 +55,7 @@ class Interface(object):
     def encrypt(self, msg):
         klen = len(self._key)
         mlen = len(msg)
-        return bytes([msg[i] ^ self._key[i % klen] for i in range(mlen)])
+        return bytes([msg[i] ^ key[i % klen] for i in range(mlen)])
 
     def decrypt(self, msg):
         return self.encrypt(msg)
