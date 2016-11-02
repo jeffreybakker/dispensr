@@ -89,7 +89,7 @@ def uid_available(uid):
     c = get_cursor()
     cursor = c.execute('''SELECT id FROM Users WHERE id=?''', uid)
 
-    if cursor.rowCount > 0:
+    if cursor is None or cursor.rowCount is None or cursor.rowCount > 0:
         return False
     return True
 
@@ -104,7 +104,7 @@ def get_user_by_uid(uid):
     c = get_cursor()
     cursor = c.execute('''SELECT * FROM Users WHERE id=?''', uid)
 
-    if cursor.rowCount == 0:
+    if cursor is None or cursor.rowCount is None or cursor.rowCount is 0:
         return None
 
     return User.parse_raw(cursor.fetchone())
@@ -120,7 +120,7 @@ def get_user_by_rfid(rfid):
     c = get_cursor()
     cursor = c.execute('''SELECT * FROM Users WHERE rfid=?''', rfid)
 
-    if cursor.rowCount == 0:
+    if cursor is None or cursor.rowCount is None or cursor.rowCount is 0:
         return None
 
     return User.parse_raw(cursor.fetchone())
@@ -157,10 +157,11 @@ def get_user_by_login(username, password):
         '''SELECT * FROM Users WHERE username=? AND password=?''',
         (username, password))
 
-    if cursor.rowCount == 0:
+    row = cursor.fetchone()
+    if row is None:
         return None
 
-    return User.parse_raw(cursor.fetchone())
+    return User.parse_raw(row)
 
 
 def get_users():
@@ -189,7 +190,7 @@ def first_available_pid():
     c = get_cursor()
     cursor = c.execute('''SELECT id FROM Prescription ORDER BY id DESC LIMIT 1''')
 
-    if cursor.rowCount == 0:
+    if cursor is None or cursor.rowCount is None or cursor.rowCount is 0:
         return 0
 
     return cursor.fetchone[0] + 1
@@ -277,7 +278,7 @@ def first_available_iid():
     c = get_cursor()
     cursor = c.execute('''SELECT id FROM Inventory ORDER BY id DESC LIMIT 1''')
 
-    if cursor.rowCount == 0:
+    if cursor is None or cursor.rowCount is None or cursor.rowCount is 0:
         return 0
 
     return cursor.fetchone[0] + 1
@@ -293,7 +294,7 @@ def get_inventory_by_iid(iid):
     c = get_cursor()
     cursor = c.execute('''SELECT * FROM Inventory WHERE id=?''', iid)
 
-    if cursor.rowCount == 0:
+    if cursor is None or cursor.rowCount is None or cursor.rowCount is 0:
         return None
 
     return Inventory.parse_raw(cursor.fetchone())
