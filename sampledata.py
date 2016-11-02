@@ -1,3 +1,7 @@
+import calendar
+
+import time
+
 import database
 from user import User
 from prescription import Prescription
@@ -11,9 +15,9 @@ users = [
 ]
 
 prescriptions = [
-    Prescription(1, 3, 2, "Tegen de hoofdpijn", 3, 5, 2, 0, 0, 0, 0, 0),
-    Prescription(2, 4, 3, "Niet op kauwen", 4, 10, 1, 0, 0, 0, 0, 0),
-    Prescription(3, 2, 1, "Tegen de hoofdpijn, oplossen in een bodempje water", 5, 2, 1, 0, 0, 0, 0, 0)
+    Prescription(1, 3, 2, "Tegen de hoofdpijn", 3, 5, 2, 0, 0, 0, calendar.timegm(time.gmtime()), 53135135130),
+    Prescription(2, 4, 3, "Niet op kauwen", 4, 10, 1, 0, 0, 0, calendar.timegm(time.gmtime()), 6843515430),
+    Prescription(3, 2, 1, "Tegen de hoofdpijn, oplossen in een bodempje water", 5, 2, 1, 0, 0, 0, calendar.timegm(time.gmtime()), 45413516840)
 ]
 
 drugs = [

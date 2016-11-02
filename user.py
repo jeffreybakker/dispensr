@@ -25,11 +25,7 @@ class User:
 
     def get_prescriptions(self):
         import database
-        cursor = database.get_prescriptions_by_uid(self.id)
-        prescriptions = []
-        for row in cursor:
-            prescriptions.append(Prescription.parse_raw(row))
-        return prescriptions
+        return database.get_prescriptions_by_uid(self.id)
 
     @property
     def id(self):

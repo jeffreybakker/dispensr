@@ -222,7 +222,7 @@ def update_prescription(prescription):
     c = get_cursor()
     c.execute(
         '''UPDATE Prescriptions SET medicine_id=?, descr=?, max_dose=?, min_time=?, amount=?, cur_dose=?, last_time=?, doctor=?, date=?, duration=? WHERE id=?''',
-        (prescription.medicine_id, prescription.descr, prescription.max_dose, prescription.min_time, prescription.amount, prescription.cur_dose, prescription.last_time, prescription.doctor, prescription.date, prescription.duration))
+        (prescription.medicine_id, prescription.descr, prescription.max_dose, prescription.min_time, prescription.amount, prescription.cur_dose, prescription.last_time, prescription.doctor, prescription.date, prescription.duration, prescription.id))
 
 
 def get_prescriptions_by_uid(uid):
@@ -233,7 +233,7 @@ def get_prescriptions_by_uid(uid):
     :return: A list of <Prescription> objects for the given uid
     """
     c = get_cursor()
-    cursor = c.execute('''SELECT * FROM Prescriptions WHERE uid=?''', uid)
+    cursor = c.execute('''SELECT * FROM Prescriptions WHERE uid=?''', (uid,))
 
     res = []
 
@@ -304,7 +304,7 @@ def get_inventory_by_iid(iid):
     :return: An <Inventory> object for the given drug ID
     """
     c = get_cursor()
-    cursor = c.execute('''SELECT * FROM Inventory WHERE id=?''', iid)
+    cursor = c.execute('''SELECT * FROM Inventory WHERE id=?''', (iid,))
 
     row = cursor.fetchone()
 
@@ -337,7 +337,7 @@ def _setup():
     """
     c = get_cursor()
     c.execute("DROP TABLE IF EXISTS Inventory")
-    c.execute("DROP TABLE IF EXISTS Prescription")
+    c.execute("DROP TABLE IF EXISTS Prescriptions")
     c.execute("DROP TABLE IF EXISTS Users")
 
     c.execute("""\
@@ -361,10 +361,10 @@ def _setup():
             min_time	INTEGER			NOT NULL,
             amount		INTEGER			NOT NULL,
             cur_dose    INTEGER         NOT NULL,
-            last_time   BIGINT          NOT NULL,
+            last_time   INTEGER(32)     NOT NULL,
             doctor      INTEGER         NOT NULL,
-            date        BIGINT          NOT NULL,
-            duration    BIGINT          DEFAULT 3153600000
+            date        INTEGER(32)     NOT NULL,
+            duration    INTEGER(32)     DEFAULT 3153600000
         )""")
 
     c.execute("""\

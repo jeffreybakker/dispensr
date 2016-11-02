@@ -19,30 +19,38 @@ def add_new_prescription(prescription):
     database.insert_prescription(prescription)
 
 
-def update_prescriptoin(prescription):
+def update_prescription(prescription):
     database.update_prescription(prescription)
 
 
 def get_prescriptions(user):
     prescriptions = user.get_prescriptions()
 
+    print(prescriptions)
+
     res = []
 
     for pres in prescriptions:
         # If the minimum amount of time has not yet passed for the prescription, skip this one
-
-        if pres.last_time + pres.min_time < calendar.timegm(time.gmtime()):
-            continue
-        elif pres.cur_dose > pres.max_dose:
-            continue
-        elif pres.duration + pres.pr_date > calendar.timegm(time.gmtime()):
+        print('oi', calendar.timegm(time.gmtime()), pres.last_time + pres.min_time)
+        if pres.last_time + pres.min_time > calendar.timegm(time.gmtime()):
             continue
 
+        print('oi m8')
+        if pres.cur_dose > pres.max_dose:
+            continue
+
+        print('oi m8, u wot?', pres.duration + pres.date, calendar.timegm(time.gmtime()))
+        if pres.duration + pres.date < calendar.timegm(time.gmtime()):
+            continue
+
+        print('oi m8, u wot, get shrekt')
         inventory = database.get_inventory_by_iid(pres.medicine_id)
         if inventory.stock < pres.amount:
             notify_inventory()
             continue
 
+        print('ok den')
         pres.last_time = int(calendar.timegm(time.gmtime()))
         pres.cur_dose += 1
 
@@ -52,6 +60,7 @@ def get_prescriptions(user):
 
     database.commit()
 
+    print('je moedyr')
     return res
 
 

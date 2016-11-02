@@ -1,5 +1,5 @@
 class Prescription:
-    def __init__(self, id, uid, medicine_id, descr, max_dose, min_time, amount, cur_dose, last_time, pr_doctor, pr_date, duration):
+    def __init__(self, id=0, uid=0, medicine_id=0, descr='', max_dose=0, min_time=0, amount=0, cur_dose=0, last_time=0, pr_doctor=0, pr_date=0, duration=0):
         self._id = id
         self._uid = uid
         self._medicine_id = medicine_id
@@ -16,7 +16,7 @@ class Prescription:
     @staticmethod
     def parse_raw(row):
         if row is None or len(row) != 12:
-            return Prescription()
+            return None
 
         tempprescription = Prescription()
         tempprescription.id = row[0]

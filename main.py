@@ -33,8 +33,15 @@ class communicationThread(threading.Thread):
                 ard.send_reject()
             else:
                 ard.send_accept()
-                print(uid, type(uid))
-                print(control.get_prescriptions(control.get_user(uid)))
+                prescriptions = control.get_prescriptions(user)
+
+                print("Found", len(prescriptions), "prescriptions:")
+
+                for pres in prescriptions:
+                    drug = control.get_drug_by_prescripiton(pres)
+                    print(drug.name, pres.descr)
+
+                print(prescriptions)
 
 
         # threads.remove(self)
