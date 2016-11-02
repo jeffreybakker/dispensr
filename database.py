@@ -351,7 +351,7 @@ def _setup():
             pr_doctor   INTEGER         NOT NULL,
             pr_date     INTEGER         NOT NULL,
             dur_din     BOOLEAN         DEFAULT FALSE,
-            duration    BIGINT          DEFAULT -1
+            duration    BIGINT          DEFAULT 3153600000
         )""")
 
     c.execute("""\
