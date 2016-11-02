@@ -9,9 +9,9 @@ users = [
 ]
 
 prescriptions = [
-    Prescription(1, 1, 2, "Niet voor inwendig gebruik", 3, 2, 5, 2, 0, 0),
-    Prescription(2, 1, 3, "Niet op kauwen", 4, 2, 10, 1, 0, 0),
-    Prescription(3, 2, 1, "Tegen de hoofdpijn", 5, 3, 2, 1, 0, 0)
+    Prescription(1, 1, 2, "Niet voor inwendig gebruik", 3, 2, 5, 2, 0, 0, 0, 0, True, 0),
+    Prescription(2, 1, 3, "Niet op kauwen", 4, 2, 10, 1, 0, 0, 0, 0, True, 0),
+    Prescription(3, 2, 1, "Tegen de hoofdpijn", 5, 3, 2, 1, 0, 0, 0, 0, True, 0)
 ]
 
 drugs = [
@@ -30,3 +30,5 @@ for prescription in prescriptions:
 
 for drug in drugs:
     database.insert_inventory(drug)
+
+database.commit()

@@ -16,7 +16,7 @@ class communicationThread(threading.Thread):
 
     def run(self):
         print("Starting " + self.name)
-        global running;
+        global running
 
         # Communication loop
         while running:
