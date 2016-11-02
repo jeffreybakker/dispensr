@@ -67,6 +67,10 @@ def get_inventory():
     return database.get_inventory()
 
 
+def get_drug_by_prescripiton(prescription):
+    return database.get_inventory_by_iid(prescription.medicine_id)
+
+
 def inventory_refill():
     inventory = get_inventory()
 
