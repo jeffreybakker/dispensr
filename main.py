@@ -58,7 +58,7 @@ def encryptRFID(tag):
 print("Starting Main Thread")
 
 running = True
-communication_thread = communicationThread(1, "Communication Tread")
+communication_thread = communicationThread(1, "Communication Thread")
 communication_thread.start()
 threads.append(communication_thread)
 prompt_thread = promptThread(2, "Prompt Thread")
