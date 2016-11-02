@@ -89,8 +89,9 @@ def uid_available(uid):
     c = get_cursor()
     cursor = c.execute('''SELECT id FROM Users WHERE id=?''', uid)
 
-    if cursor is None or cursor.rowCount is None or cursor.rowCount > 0:
+    if cursor.fetchone is None:
         return False
+
     return True
 
 
@@ -104,10 +105,12 @@ def get_user_by_uid(uid):
     c = get_cursor()
     cursor = c.execute('''SELECT * FROM Users WHERE id=?''', uid)
 
-    if cursor is None or cursor.rowCount is None or cursor.rowCount is 0:
+    row = cursor.fetchone()
+
+    if row is None:
         return None
 
-    return User.parse_raw(cursor.fetchone())
+    return User.parse_raw(row)
 
 
 def get_user_by_rfid(rfid):
@@ -118,12 +121,16 @@ def get_user_by_rfid(rfid):
     :return: An <User> object for the given rfid, None if no user was found
     """
     c = get_cursor()
-    cursor = c.execute('''SELECT * FROM Users WHERE rfid=?''', rfid)
+    cursor = c.execute(
+        '''SELECT * FROM Users WHERE rfid=?;''',
+        (rfid,))
 
-    if cursor is None or cursor.rowCount is None or cursor.rowCount is 0:
+    row = cursor.fetchone()
+
+    if row is None:
         return None
 
-    return User.parse_raw(cursor.fetchone())
+    return User.parse_raw(row)
 
 
 def get_users_by_role(role):
@@ -158,6 +165,7 @@ def get_user_by_login(username, password):
         (username, password))
 
     row = cursor.fetchone()
+
     if row is None:
         return None
 
@@ -190,10 +198,12 @@ def first_available_pid():
     c = get_cursor()
     cursor = c.execute('''SELECT id FROM Prescription ORDER BY id DESC LIMIT 1''')
 
-    if cursor is None or cursor.rowCount is None or cursor.rowCount is 0:
+    row = cursor.fetchone()
+
+    if row is None:
         return 0
 
-    return cursor.fetchone[0] + 1
+    return row[0] + 1
 
 
 def insert_prescription(prescription):
@@ -204,15 +214,15 @@ def insert_prescription(prescription):
     """
     c = get_cursor()
     c.execute(
-        '''INSERT INTO Prescription (id, uid, medicine_id, descr, max_dose, rec_dose, min_time, amount, cur_dose, last_time, doctor, date, dur_din, duration) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''',
-        (prescription.id, prescription.uid, prescription.medicine_id, prescription.descr, prescription.max_dose, prescription.rec_dose, prescription.min_time, prescription.amount, prescription.cur_dose, prescription.last_time, prescription.doctor, prescription.date, prescription.dur_din, prescription.duration))
+        '''INSERT INTO Prescription (id, uid, medicine_id, descr, max_dose, rec_dose, min_time, amount, cur_dose, last_time, doctor, date, duration) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''',
+        (prescription.id, prescription.uid, prescription.medicine_id, prescription.descr, prescription.max_dose, prescription.rec_dose, prescription.min_time, prescription.amount, prescription.cur_dose, prescription.last_time, prescription.doctor, prescription.date, prescription.duration))
 
 
 def update_prescription(prescription):
     c = get_cursor()
     c.execute(
-        '''UPDATE Prescription SET medicine_id=?, descr=?, max_dose=?, rec_dose=?, min_time=?, amount=?, cur_dose=?, last_time=?, doctor=?, date=?, dur_din=?, duration=? WHERE id=?''',
-        (prescription.medicine_id, prescription.descr, prescription.max_dose, prescription.rec_dose, prescription.min_time, prescription.amount, prescription.cur_dose, prescription.last_time, prescription.doctor, prescription.date, prescription.dur_din, prescription.duration))
+        '''UPDATE Prescription SET medicine_id=?, descr=?, max_dose=?, rec_dose=?, min_time=?, amount=?, cur_dose=?, last_time=?, doctor=?, date=?, duration=? WHERE id=?''',
+        (prescription.medicine_id, prescription.descr, prescription.max_dose, prescription.rec_dose, prescription.min_time, prescription.amount, prescription.cur_dose, prescription.last_time, prescription.doctor, prescription.date, prescription.duration))
 
 
 def get_prescriptions_by_uid(uid):
@@ -278,10 +288,12 @@ def first_available_iid():
     c = get_cursor()
     cursor = c.execute('''SELECT id FROM Inventory ORDER BY id DESC LIMIT 1''')
 
-    if cursor is None or cursor.rowCount is None or cursor.rowCount is 0:
+    row = cursor.fetchone()
+
+    if row is None:
         return 0
 
-    return cursor.fetchone[0] + 1
+    return row[0] + 1
 
 
 def get_inventory_by_iid(iid):
@@ -294,10 +306,12 @@ def get_inventory_by_iid(iid):
     c = get_cursor()
     cursor = c.execute('''SELECT * FROM Inventory WHERE id=?''', iid)
 
-    if cursor is None or cursor.rowCount is None or cursor.rowCount is 0:
+    row = cursor.fetchone()
+
+    if row is None:
         return None
 
-    return Inventory.parse_raw(cursor.fetchone())
+    return Inventory.parse_raw(row)
 
 
 def get_inventory():
@@ -350,8 +364,7 @@ def _setup():
             cur_dose    INTEGER         NOT NULL,
             last_time   BIGINT          NOT NULL,
             doctor      INTEGER         NOT NULL,
-            date        BIGINT         NOT NULL,
-            dur_din     BOOLEAN         DEFAULT FALSE,
+            date        BIGINT          NOT NULL,
             duration    BIGINT          DEFAULT 3153600000
         )""")
 
