@@ -10,8 +10,8 @@ class Prescription:
         self._amount = amount
         self._cur_dose = cur_dose
         self._last_time = last_time
-        self._pr_doctor = pr_doctor
-        self._pr_date = pr_date
+        self._doctor = pr_doctor
+        self._date = pr_date
         self._dur_din = dur_din
         self._duration = duration
 
@@ -31,8 +31,8 @@ class Prescription:
         tempprescription.amount = row[7]
         tempprescription.cur_dose = row[8]
         tempprescription.last_time = row[9]
-        tempprescription.pr_doctor = row[10]
-        tempprescription.pr_date = row[11]
+        tempprescription.doctor = row[10]
+        tempprescription.date = row[11]
         tempprescription.dur_din = row[12]
         tempprescription.duration = row[13]
         return tempprescription
@@ -118,20 +118,20 @@ class Prescription:
         self._last_time = value
 
     @property
-    def pr_doctor(self):
-        return self._pr_doctor
+    def doctor(self):
+        return self._doctor
 
-    @pr_doctor.setter
-    def pr_doctor(self, value):
-        self._pr_doctor = value
+    @doctor.setter
+    def doctor(self, value):
+        self._doctor = value
 
     @property
-    def pr_date(self):
-        return self._pr_date
+    def date(self):
+        return self._date
 
-    @pr_date.setter
-    def pr_date(self, value):
-        self._pr_date = value
+    @date.setter
+    def date(self, value):
+        self._date = value
 
     @property
     def dur_din(self):
