@@ -19,7 +19,7 @@ def authenticate(username, password):
     print(username + "," + password)
     user = database.get_user_by_login(username, password)
 
-    if user.id == -1:
+    if not user.id:
         return "False"
     else:
         return "True"
