@@ -55,7 +55,7 @@ class Interface(object):
     def encrypt(self, msg):
         klen = len(self._key)
         mlen = len(msg)
-        return bytes([msg[i] ^ key[i % klen] for i in range(mlen)])
+        return bytes([msg[i] ^ self._key[i % klen] for i in range(mlen)])
 
     def decrypt(self, msg):
         return self.encrypt(msg)
@@ -83,35 +83,39 @@ class Interface(object):
 
         return msg
 
-    def run(self):
-        while True:
-            hdr = self._serial.read(3)
-            payload = self._serial.read(hdr[2] + 4)
+    def read_rfid(self):
+        hdr = self._serial.read(3)
+        payload = self._serial.read(hdr[2] + 4)
 
-            msg = self.unpack(hdr + payload)
+        msg = self.unpack(hdr + payload)
 
-            if msg[0] == self.OP_READ:
-                card = hexlify(msg[2:2+msg[1]]).decode('utf8')
+        if msg[0] != self.OP_READ:
+            raise Exception('Invalid opcode: {}'.format(msg[0]))
 
-                if card in ['22fa0d1d']:
-                    print('[*] Accept card: {}'.format(card))
-                    msg = bytes([self.OP_ACCEPT])
-                    data = self.pack(msg)
+        uid, = unpack('!I', msg[2:])
 
-                    self._serial.write(data)
-                else:
-                    print('[!] Reject card: {}'.format(card))
-                    msg = bytes([self.OP_REJECT])
-                    data = self.pack(msg)
+        return uid
 
-                    self._serial.write(data)
-            else:
-                print('[!] Unknown opcode: 0x{:02x}'.format(msg[0]))
+    def send_accept(self):
+        data = self.pack(bytes([self.OP_ACCEPT]))
+        self._serial.write(data)
+
+    def send_reject(self):
+        data = self.pack(bytes([self.OP_REJECT]))
+        self._serial.write(data)
 
 if __name__ == '__main__':
     key = b'ZxPEh7ezUDq54pRv'
     # key = b'Testing123'
 
     ard = Interface(key)
-    ard.run()
+    
+    while True:
+        uid = ard.read_rfid()
+        print(uid)
+
+        if uid == 586812701:
+            ard.send_accept()
+        else:
+            ard.send_reject()
 
