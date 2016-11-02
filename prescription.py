@@ -1,5 +1,5 @@
 class Prescription:
-    def __init__(self, id, uid, medicine_id, descr, max_dose, rec_dose, min_time, amount, cur_dose, last_time, pr_doctor, pr_date, dur_din, duration):
+    def __init__(self, id, uid, medicine_id, descr, max_dose, rec_dose, min_time, amount, cur_dose, last_time, pr_doctor, pr_date, duration):
         self._id = id
         self._uid = uid
         self._medicine_id = medicine_id
@@ -12,12 +12,11 @@ class Prescription:
         self._last_time = last_time
         self._doctor = pr_doctor
         self._date = pr_date
-        self._dur_din = dur_din
         self._duration = duration
 
     @staticmethod
     def parse_raw(row):
-        if row is None or len(row) != 14:
+        if row is None or len(row) != 13:
             return Prescription()
 
         tempprescription = Prescription()
@@ -33,8 +32,7 @@ class Prescription:
         tempprescription.last_time = row[9]
         tempprescription.doctor = row[10]
         tempprescription.date = row[11]
-        tempprescription.dur_din = row[12]
-        tempprescription.duration = row[13]
+        tempprescription.duration = row[12]
         return tempprescription
 
     @property
@@ -132,14 +130,6 @@ class Prescription:
     @date.setter
     def date(self, value):
         self._date = value
-
-    @property
-    def dur_din(self):
-        return self._dur_din
-
-    @dur_din.setter
-    def dur_din(self, value):
-        self._dur_din = value
 
     @property
     def duration(self):
