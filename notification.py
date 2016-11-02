@@ -14,24 +14,30 @@ class Email:
         self._body = body
 
     def send(self):
+        # Import the needed packages
         from email.mime.multipart import MIMEMultipart
         from email.mime.text import MIMEText
         import smtplib
 
+        # Setup the message
         msg = MIMEMultipart()
         msg['From'] = self.from_addr
         msg['To'] = self.to_addr
 
+        # Attach the subject and body
         msg['Subject'] = self.subject
         msg.attach(MIMEText(self.body))
 
+        # Make a secure connection with the mailserver
         server = smtplib.SMTP('mail.jbakker.co')
         server.starttls()
 
+        # Login onto the mailserver
         server.login('drug.dispensr@jbakker.co', 'dispensr')
 
         text = msg.as_string()
 
+        # Send the mail and close the connection
         server.sendmail(self.from_addr, self.to_addr, text)
         server.quit()
 
@@ -83,14 +89,15 @@ class Email:
     def body(self, value):
         self._body = value
 
+# Some default templates
 DEFAULT_TAKE_MEDS = Email('Drug Dispensr', 'drug.dispensr@jbakker.co',
                           DEFAULT_TO_NAME, DEFAULT_TO_ADDR,
-                          'Take your meds now!',
+                          'Take your meds now',
                           'Do it now!')
 
 DEFAULT_FILL_NOW = Email('Drug Dispensr', 'drug.dispensr@jbakker.co',
                          DEFAULT_TO_NAME, DEFAULT_TO_ADDR,
-                         'Take your meds now!',
+                         'Refill the dispenser',
                          'Do it now!')
 
 
