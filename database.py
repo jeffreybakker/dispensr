@@ -196,7 +196,7 @@ def first_available_pid():
     :return: An integer for the first not-taken PID
     """
     c = get_cursor()
-    cursor = c.execute('''SELECT id FROM Prescription ORDER BY id DESC LIMIT 1''')
+    cursor = c.execute('''SELECT id FROM Prescriptions ORDER BY id DESC LIMIT 1''')
 
     row = cursor.fetchone()
 
@@ -214,14 +214,14 @@ def insert_prescription(prescription):
     """
     c = get_cursor()
     c.execute(
-        '''INSERT INTO Prescription (id, uid, medicine_id, descr, max_dose, min_time, amount, cur_dose, last_time, doctor, date, duration) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''',
+        '''INSERT INTO Prescriptions (id, uid, medicine_id, descr, max_dose, min_time, amount, cur_dose, last_time, doctor, date, duration) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''',
         (prescription.id, prescription.uid, prescription.medicine_id, prescription.descr, prescription.max_dose, prescription.min_time, prescription.amount, prescription.cur_dose, prescription.last_time, prescription.doctor, prescription.date, prescription.duration))
 
 
 def update_prescription(prescription):
     c = get_cursor()
     c.execute(
-        '''UPDATE Prescription SET medicine_id=?, descr=?, max_dose=?, min_time=?, amount=?, cur_dose=?, last_time=?, doctor=?, date=?, duration=? WHERE id=?''',
+        '''UPDATE Prescriptions SET medicine_id=?, descr=?, max_dose=?, min_time=?, amount=?, cur_dose=?, last_time=?, doctor=?, date=?, duration=? WHERE id=?''',
         (prescription.medicine_id, prescription.descr, prescription.max_dose, prescription.min_time, prescription.amount, prescription.cur_dose, prescription.last_time, prescription.doctor, prescription.date, prescription.duration))
 
 
