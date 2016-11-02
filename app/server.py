@@ -9,6 +9,7 @@ PORT = 9999
 running = False
 
 def authenticate(username, password):
+    database.init("database.db", True)
     user = database.get_user_by_login(username, password)
 
     if user:
@@ -47,7 +48,7 @@ try:
     s.bind((HOST, PORT))
     running = True
 except socket.error as msg:
-    print('Bind failed. Error Code : ' + str(msg[0]) + ' Message ' + msg[1])
+    print("Bind failed")
     sys.exit()
 
 print('Socket bind complete')
