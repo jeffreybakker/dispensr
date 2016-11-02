@@ -48,7 +48,7 @@ class promptThread(threading.Thread):
         # Prompt loop
         while running:
             cmd = input("> ")
-            if (cmd == "exit"):
+            if cmd == "exit":
                 running = False
 
         # threads.remove(self)
