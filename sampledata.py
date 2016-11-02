@@ -5,7 +5,9 @@ from inventory import Inventory
 
 users = [
     User(1, 80, "pat", "", ""),
-    User(2, 68465, "doc", "hoi", "wachtwoord")
+    User(2, 68465, "doc", "hoi", "wachtwoord"),
+    User(3, 586812701, "pat", "", ""),
+    User(4, 3621006848, "pat", "", "")
 ]
 
 prescriptions = [
