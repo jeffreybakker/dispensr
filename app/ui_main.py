@@ -1,9 +1,12 @@
 import tkinter
+import calendar
+import time
+import json
 from tkinter import ttk
 from tkinter.ttk import Treeview
 
 class UIMain:
-    def __init__(self):
+    def __init__(self, sock):
         root = tkinter.Tk()
 
         tree = Treeview(root, columns=('uid', 'medicine_id', 'descr', 'max_dose', 'rec_dose', 'min_time', 'amount', 'cur_dose', 'last_time', 'doctor', 'date', 'duration'))
@@ -34,6 +37,14 @@ class UIMain:
         tree.column('doctor', width=70)
         tree.column('date', width=70)
         tree.column('duration', width=70)
+
+        tree.insert('', 'end', text="1", values=['3', '2', 'Tegen de hoofdpijn', '3', '5', '2', '0', '0','0', str(calendar.timegm(time.gmtime())), str(53135135130)])
+
+        tosend = {}
+        tosend["command"]="getprescriptions"
+        tosend["uid"]="1" # TODO: Hardcoded
+        sock.send(json.dumps(tosend).encode())
+
 
         tree.pack()
 

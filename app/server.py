@@ -2,6 +2,7 @@ import socket
 import sys
 import json
 import database
+import control
 from user import User
 from prescription import Prescription
 from inventory import Inventory
@@ -53,6 +54,10 @@ def client_thread(conn):
                     auth = True
                 print("Sending: "+json.dumps(tosend))
                 conn.send(json.dumps(tosend).encode())
+            if data["command"] == "getprescriptions" and auth:
+                user = database.get_user_by_uid(data["uid"])
+                prescriptions = user.get_prescriptions()
+                print ("getprescriptions")
 
     # Properly close the connection
     conn.shutdown(1)
