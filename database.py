@@ -121,7 +121,9 @@ def get_user_by_rfid(rfid):
     :return: An <User> object for the given rfid, None if no user was found
     """
     c = get_cursor()
-    cursor = c.execute('''SELECT * FROM Users WHERE rfid=?''', rfid)
+    cursor = c.execute(
+        '''SELECT * FROM Users WHERE rfid=?;''',
+        (rfid,))
 
     row = cursor.fetchone()
 
