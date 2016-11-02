@@ -34,3 +34,4 @@ for drug in drugs:
     database.insert_inventory(drug)
 
 database.commit()
+#lol
