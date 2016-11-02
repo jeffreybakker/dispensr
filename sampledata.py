@@ -1,7 +1,7 @@
-from user import User
-from inventory import Inventory
-from prescription import Prescription
 import database
+from user import User
+from prescription import Prescription
+from inventory import Inventory
 
 users = [
     User(1, 80, "pat", "", ""),
@@ -9,15 +9,15 @@ users = [
 ]
 
 prescriptions = [
-    Prescription(1, 1, 2, "Niet voor inwendig gebruik", 3, 2, 5, 2, 0, 0, 0, 0, 0),
+    Prescription(1, 1, 2, "Tegen de hoofdpijn", 3, 2, 5, 2, 0, 0, 0, 0, 0),
     Prescription(2, 1, 3, "Niet op kauwen", 4, 2, 10, 1, 0, 0, 0, 0, 0),
-    Prescription(3, 2, 1, "Tegen de hoofdpijn", 5, 3, 2, 1, 0, 0, 0, 0, 0)
+    Prescription(3, 2, 1, "Tegen de hoofdpijn, oplossen in een bodempje water", 5, 3, 2, 1, 0, 0, 0, 0, 0)
 ]
 
 drugs = [
-    Inventory(1, "Paracetamol", "liq", 500, 411),
-    Inventory(2, "ANTIAIDS", "pil", 20, 14),
-    Inventory(3, "Laxeermiddel", "liq", 50, 29)
+    Inventory(1, "Paracetamol", "sol", 500, 411),
+    Inventory(2, "Hoestdrank", "liq", 500, 414),
+    Inventory(3, "Asperine", "pil", 500, 429)
 ]
 
 database.init("data/database.db")
