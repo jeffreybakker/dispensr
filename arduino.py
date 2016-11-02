@@ -1,62 +1,117 @@
+#!/usr/bin/env python3
+
+from binascii import hexlify
+from struct import pack, unpack
 import serial
 
-MOD_ADLER = 65521
 
+class Interface(object):
+    VERSION = 0x01
 
-def adler32(buf):
-    a, b = 1, 0
-    for c in buf:
-        a = (a + ord(c)) % MOD_ADLER
-        b = (b + a) % MOD_ADLER;
+    OP_READ = 0x00
+    OP_ACCEPT = 0x01
+    OP_REJECT = 0x02
+    OP_RESET = 0xFF
 
-    return (b << 16) | a
+    MOD_ADLER = 65521
 
+    def __init__(self, key, port='/dev/ttyACM0'):
+        self._lcount = 0
+        self._rcount = 0
 
-KEY = "ZxPEh7ezUDq54pRv"
+        self._key = key
 
-OPCODE_READ = bytes([0x00])
-OPCODE_ACCEPT = bytes([0x01])
-OPCODE_REJECT = bytes([0x02])
-OPCODE_RESET = bytes([0xFF])
+        self._serial = serial.Serial(port)
 
-ser = serial.Serial('/dev/ttyACM0')
+        print('[i] Listening on ' + port)
 
-# Reset the remote device
-ser.write(OPCODE_RESET)
+    def adler32(self, buf):
+        a, b = 1, 0
+        for i in range(len(buf)):
+            a = (a + buf[i]) % self.MOD_ADLER
+            b = (b + a) % self.MOD_ADLER
+    
+        val = (b << 16) | a
 
+        return bytes(pack('!I', val))
 
-def readUID():
-    header = ord(ser.read())
-    if header != 0x55:
-        raise Exception('invalid protocol header')
+    def hmac(self, msg):
+        key = self._key
 
-    l = ord(ser.read())
+        # If the key is longer than the block size, take the hash
+        if len(key) > 4:
+            key = self.adler32(key)
 
-    data = ser.read(l)
-    buf = ''
+        # If the key is shorter, pad with zeroes
+        if len(key) < 4:
+            key = key + bytes(4 - len(key))
 
-    for i in range(l):
-        buf += chr(ord(data[i]) ^ ord(KEY[i % 16]))
+        # Calculate the `o_key_pad` and `i_key_pad`
+        o_key_pad = bytes([0x5c ^ i for i in key])
+        i_key_pad = bytes([0x36 ^ i for i in key])
 
-    t = ord(buf[0])
-    l = ord(buf[1])
-    v = buf[2:2 + l].encode('hex')
-    cksum = buf[2 + l:]
+        return self.adler32(o_key_pad + self.adler32(i_key_pad + msg))
+    
+    def encrypt(self, msg):
+        klen = len(self._key)
+        mlen = len(msg)
+        return bytes([msg[i] ^ key[i % klen] for i in range(mlen)])
 
-    verify = adler32(buf[:-4])
+    def decrypt(self, msg):
+        return self.encrypt(msg)
 
-    print(buf[:-4].encode('hex'))
+    def pack(self, msg):
+        data = bytes([self.VERSION, self._lcount, len(msg)])
+        data += self.encrypt(msg)
+        data += self.hmac(data)
 
-    print(cksum.encode('hex'), verify)
+        return data
 
-    if t == OPCODE_READ:
-        print('Read card:', v, )
+    def unpack(self, data):
+        version = data[0]
+        count = data[1]
+        length = data[2]
+        msg = self.decrypt(data[3:3+length])
+        hmac = data[3+length:]
 
-        if v == '22fa0d1d':
-            print('Accept')
-            ser.write(chr(OPCODE_ACCEPT))
-        else:
-            print('Reject')
-            ser.write(chr(OPCODE_REJECT))
-    else:
-        print('Unknown opcode:', t)
+        if version != 1:
+            raise Exception('Unknown protocol version: {}'.format(version))
+
+        verify = self.hmac(data[:-4])
+        if verify != hmac:
+            raise Exception('Invalid HMAC signature')
+
+        return msg
+
+    def run(self):
+        while True:
+            hdr = self._serial.read(3)
+            payload = self._serial.read(hdr[2] + 4)
+
+            msg = self.unpack(hdr + payload)
+
+            if msg[0] == self.OP_READ:
+                card = hexlify(msg[2:2+msg[1]]).decode('utf8')
+
+                if card in ['22fa0d1d']:
+                    print('[*] Accept card: {}'.format(card))
+                    msg = bytes([self.OP_ACCEPT])
+                    data = self.pack(msg)
+
+                    self._serial.write(data)
+                else:
+                    print('[!] Reject card: {}'.format(card))
+                    msg = bytes([self.OP_REJECT])
+                    data = self.pack(msg)
+
+                    self._serial.write(data)
+            else:
+                print('[!] Unknown opcode: 0x{:02x}'.format(msg[0]))
+
+if __name__ == '__main__':
+    key = b'ZxPEh7ezUDq54pRv'
+    # key = b'Testing123'
+
+    ard = Interface(key)
+    ard.run()
+
