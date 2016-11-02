@@ -21,7 +21,7 @@ def encrypt(toencr):
 
 
 def mainapp():
-
+    return None
 
 
 # Connection thread
