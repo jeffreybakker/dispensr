@@ -12,15 +12,15 @@ def get_prescriptions(user):
 
     res = []
 
-	for pres in prescriptions:
-		# If the minimum amount of time has not yet passed for the prescription, skip this one
+    for pres in prescriptions:
+        # If the minimum amount of time has not yet passed for the prescription, skip this one
 
-		if pres.last_time + pres.min_time < calendar.timegm(time.gmtime()):
-			continue
-		elif pres.cur_dose > pres.max_dose:
-			continue
-		elif pres.duration + pres.pr_date > calendar.timegm(time.gmtime()):
-			continue
+        if pres.last_time + pres.min_time < calendar.timegm(time.gmtime()):
+            continue
+        elif pres.cur_dose > pres.max_dose:
+            continue
+        elif pres.duration + pres.pr_date > calendar.timegm(time.gmtime()):
+            continue
 
         inventory = database.get_inventory_by_iid(pres.medicine_id)
         if inventory.stock < pres.amount:

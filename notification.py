@@ -3,7 +3,7 @@ DEFAULT_TO_ADDR = 'jeffrey.bakker@gmail.com'
 
 
 class Email:
-    def __init__(self, from_name='', from_addr='', to_name='', to_addr=DEFAULT_TO_ADDR, subject='', body=''):
+    def __init__(self, from_name='', from_addr='', to_name='', to_addr='', subject='', body=''):
         self._from_name = from_name
         self._from_addr = from_addr
 
@@ -79,11 +79,13 @@ class Email:
     def body(self, value):
         self._body = value
 
-DEFAULT_TAKE_MEDS = Email('Drug Dispensr', 'drug.dispensr@jbakker.co', DEFAULT_TO_NAME, DEFAULT_TO_ADDR,
+DEFAULT_TAKE_MEDS = Email('Drug Dispensr', 'drug.dispensr@jbakker.co',
+                          DEFAULT_TO_NAME, DEFAULT_TO_ADDR,
                           'Take your fucking meds now!',
                           'Do it now!')
 
-DEFAULT_FILL_NOW = Email('Drug Dispensr', 'drug.dispensr@jbakker.co', DEFAULT_TO_NAME, DEFAULT_TO_ADDR,
+DEFAULT_FILL_NOW = Email('Drug Dispensr', 'drug.dispensr@jbakker.co',
+                         DEFAULT_TO_NAME, DEFAULT_TO_ADDR,
                          'Take your fucking meds now!',
                          'Do it now!')
 
