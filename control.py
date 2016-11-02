@@ -24,7 +24,7 @@ def update_prescriptoin(prescription):
 
 
 def get_prescriptions(user):
-    prescriptions = user.getPrescriptions()
+    prescriptions = user.get_prescriptions()
 
     res = []
 
