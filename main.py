@@ -20,10 +20,10 @@ class communicationThread(threading.Thread):
         global running
 
         # Communication loop
-        ard = arduino.Interface(b'ZxPEh7ezUDq54pRv')
+        ard = arduino.Interface(b'ZxPEh7ezUDq54pRv', 'COM3')
         while running:
             uid = ard.read_rfid()
-            print(control.get_prescriptions(uid))
+            print(control.get_prescriptions(control.get_user(uid)))
 
             if uid == 586812701:
                 ard.send_accept()
