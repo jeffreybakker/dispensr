@@ -9,9 +9,9 @@ users = [
 ]
 
 prescriptions = [
-    Prescription(1, 1, 2, "Tegen de hoofdpijn", 3, 2, 5, 2, 0, 0, 0, 0, 0),
-    Prescription(2, 1, 3, "Niet op kauwen", 4, 2, 10, 1, 0, 0, 0, 0, 0),
-    Prescription(3, 2, 1, "Tegen de hoofdpijn, oplossen in een bodempje water", 5, 3, 2, 1, 0, 0, 0, 0, 0)
+    Prescription(1, 1, 2, "Tegen de hoofdpijn", 3, 5, 2, 0, 0, 0, 0, 0),
+    Prescription(2, 1, 3, "Niet op kauwen", 4, 10, 1, 0, 0, 0, 0, 0),
+    Prescription(3, 2, 1, "Tegen de hoofdpijn, oplossen in een bodempje water", 5, 2, 1, 0, 0, 0, 0, 0)
 ]
 
 drugs = [
