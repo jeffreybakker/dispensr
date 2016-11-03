@@ -16,16 +16,19 @@ class Interface(object):
     MOD_ADLER = 65521
 
     def __init__(self, key, port='/dev/ttyACM0'):
+        # Reset the packet counters
         self._lcount = 0
         self._rcount = 0
 
+        # Set the secret key
         self._key = key
 
+        # Open the serial port
         self._serial = serial.Serial(port)
 
-        print('[i] Listening on ' + port)
-
     def adler32(self, buf):
+        """ Compute the Adler-32 hash of a bytestring """
+
         a, b = 1, 0
         for i in range(len(buf)):
             a = (a + buf[i]) % self.MOD_ADLER
@@ -36,6 +39,8 @@ class Interface(object):
         return bytes(pack('!I', val))
 
     def hmac(self, msg):
+        """ Compute the HMAC-Adler-32 of a bytestring """
+
         key = self._key
 
         # If the key is longer than the block size, take the hash
@@ -53,14 +58,19 @@ class Interface(object):
         return self.adler32(o_key_pad + self.adler32(i_key_pad + msg))
     
     def encrypt(self, msg):
+        """ Encrypt a message by XOR'ing the key """
+
         klen = len(self._key)
         mlen = len(msg)
         return bytes([msg[i] ^ self._key[i % klen] for i in range(mlen)])
 
     def decrypt(self, msg):
+        """ Decrypt a message by XOR'ing the key """
         return self.encrypt(msg)
 
     def pack(self, msg):
+        """ Encode and encrypt a packet """
+
         data = bytes([self.VERSION, self._lcount, len(msg)])
         data += self.encrypt(msg)
         data += self.hmac(data)
@@ -68,6 +78,8 @@ class Interface(object):
         return data
 
     def unpack(self, data):
+        """ Decode and decrypt a packet """
+
         version = data[0]
         count = data[1]
         length = data[2]
@@ -84,23 +96,30 @@ class Interface(object):
         return msg
 
     def read_rfid(self):
+        """ Make a blocking call to read an RFID card """
+
+        # Read the packet from the serial port
         hdr = self._serial.read(3)
         payload = self._serial.read(hdr[2] + 4)
 
+        # Decode the message
         msg = self.unpack(hdr + payload)
 
         if msg[0] != self.OP_READ:
             raise Exception('Invalid opcode: {}'.format(msg[0]))
 
+        # Convert the UID to an int
         uid, = unpack('!I', msg[2:])
 
         return uid
 
     def send_accept(self):
+        """ Send an ACCEPT opcode to the Arduino """
         data = self.pack(bytes([self.OP_ACCEPT]))
         self._serial.write(data)
 
     def send_reject(self):
+        """ Send a REJECT opcode to the Arduino """
         data = self.pack(bytes([self.OP_REJECT]))
         self._serial.write(data)
 
