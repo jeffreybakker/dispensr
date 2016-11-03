@@ -28,8 +28,7 @@ def init():
     prescriptions = [
         Prescription(1, 3, 2, "Tegen de keelpijn", 3, 5, 2, 0, 0, 0, calendar.timegm(time.gmtime()), 53135135130),
         Prescription(2, 4, 3, "Niet op kauwen", 4, 10, 1, 0, 0, 0, calendar.timegm(time.gmtime()), 6843515430),
-        Prescription(3, 2, 1, "Tegen de hoofdpijn, oplossen in een bodempje water", 5, 2, 1, 0, 0, 0,
-                     calendar.timegm(time.gmtime()), 45413516840)
+        Prescription(3, 2, 1, "Tegen de hoofdpijn, oplossen in een bodempje water", 5, 2, 1, 0, 0, 0, calendar.timegm(time.gmtime()), 45413516840)
     ]
 
     # Inventory class contains: id, name, type, capacity, stock

@@ -146,7 +146,6 @@ def inventory_refill():
     Sets the stock of all drugs in the inventory to its maximum capacity
     """
     inventory = get_inventory()
-
     for i in inventory:
         i.stock = i.capacity
         database.update_inventory(i)

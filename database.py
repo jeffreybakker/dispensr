@@ -335,7 +335,7 @@ def get_inventory():
     res = []
 
     for row in cursor:
-        res.append(Prescription.parse_raw(row))
+        res.append(Inventory.parse_raw(row))
 
     return res
 

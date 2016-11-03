@@ -19,7 +19,7 @@ class Prescription:
 
     @staticmethod
     def parse_raw(row):
-        if row is None or len(row) != 12:
+        if row is None: # or len(row) != 12:
             return None
 
         tempprescription = Prescription()
