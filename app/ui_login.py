@@ -4,7 +4,6 @@ from tkinter import *
 
 
 class UILogin:
-    keepAlive = False
 
     # Login button callback
     def button_login_callback(self):
@@ -14,12 +13,12 @@ class UILogin:
         data['password'] = self.entry_password.get()
         print(json.dumps(data))
         self.socket.send(json.dumps(data).encode())
-        global keepAlive
-        keepAlive = True
+        self.keepAlive = True
         self.close()
 
     def __init__(self, socket, function):
         self.socket = socket
+        self.keepAlive = False
 
         # Root of window
         self.root = tkinter.Tk()
@@ -51,8 +50,7 @@ class UILogin:
         button_login.pack()
 
         self.root.mainloop()
-        global keepAlive
-        if not keepAlive:
+        if not self.keepAlive:
             function()
 
     def close(self):
