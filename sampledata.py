@@ -1,4 +1,7 @@
 def init():
+    """/
+    Insert all the sample data into the database
+    """
     import calendar
     import time
     import database
