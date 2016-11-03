@@ -32,18 +32,21 @@ def app_close():
 
 # Connection thread
 class connection_thread(threading.Thread):
-    def __init__(self, threadID, name, sock):
+    def __init__(self, threadID, name, sock, function):
         threading.Thread.__init__(self)
         self.threadID = threadID
         self.name = name
         self.sock = sock
+        self.function = function
 
     def run(self):
         print("Starting " + self.name)
         global running
 
         while running:
+            print("listening")
             received = self.sock.recv(1024)
+            print("received")
             json_data = ""
 
             if not received:
@@ -59,7 +62,7 @@ class connection_thread(threading.Thread):
 
                 if data["command"] == "authlogin":
                     if data["auth"] == "True":
-                        app_main(self.sock, app_close)
+                        self.function(self.sock, app_close)
                     elif data["auth"] == "False":
                         #messagebox.showerror("Error", "Authentication failed")
                         print("Authentication failed")
@@ -80,7 +83,7 @@ except socket.error as msg:
     messagebox.showerror("Error", 'Connection failed. Error Code : ' + str(msg[0]) + ' Message ' + msg[1])
     sys.exit()
 
-connthread = connection_thread(1, "Connection Thread", s)
+connthread = connection_thread(1, "Connection Thread", s, app_main)
 connthread.start()
 
 ui_login = UILogin(s, app_close)

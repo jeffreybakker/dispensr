@@ -5,11 +5,14 @@ import json
 from tkinter import ttk
 from tkinter.ttk import Treeview
 
+
 class UIMain:
     def __init__(self, sock, function):
         root = tkinter.Tk()
 
-        tree = Treeview(root, columns=('uid', 'medicine_id', 'descr', 'max_dose', 'rec_dose', 'min_time', 'amount', 'cur_dose', 'last_time', 'doctor', 'date', 'duration'))
+        tree = Treeview(root, columns=(
+        'uid', 'medicine_id', 'descr', 'max_dose', 'rec_dose', 'min_time', 'amount', 'cur_dose', 'last_time', 'doctor',
+        'date', 'duration'))
         tree.heading('#0', text='id')
         tree.heading('uid', text='uid')
         tree.heading('medicine_id', text='medicine_id')
@@ -38,15 +41,14 @@ class UIMain:
         tree.column('date', width=70)
         tree.column('duration', width=70)
 
-        tree.insert('', 'end', text="1", values=['3', '2', 'Tegen de hoofdpijn', '3', '5', '2', '0', '0','0', str(calendar.timegm(time.gmtime())), str(53135135130)])
+        tree.insert('', 'end', text="1", values=['3', '2', 'Tegen de hoofdpijn', '3', '5', '2', '0', '0', '0',
+                                                 str(calendar.timegm(time.gmtime())), str(53135135130)])
+        tree.pack()
 
         tosend = {}
-        tosend["command"]="getprescriptions"
-        tosend["uid"]="1" # TODO: Hardcoded
+        tosend["command"] = "getprescriptions"
+        tosend["uid"] = "1"  # TODO: Hardcoded
         sock.send(json.dumps(tosend).encode())
-
-
-        tree.pack()
 
         root.mainloop()
         function()
