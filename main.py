@@ -154,7 +154,7 @@ class promptThread(threading.Thread):
                 patient_test = False
                 for user in users:
                     if patient_id == user.id:
-                        print("New prescription added.")
+                        print("New prescription added with id: " + str(prescription_id))
                         database.insert_prescription(Prescription.parse_raw([prescription_id, patient_id, medicine_id, description, max_dose, min_time, amount, cur_dose, date, doctor_id, duration, date]))
                         database.commit()
                         patient_test = True
@@ -183,7 +183,7 @@ class promptThread(threading.Thread):
                     new_password = ""
                 database.insert_user(User.parse_raw([user_id, rfid, role, new_username, new_password]))
                 database.commit()
-                print("New user added.")
+                print("New user added with id: " + str(user_id))
 
             if cmd == "remove user" and doctor_test:
                 user_id = int(input("User id = "))
