@@ -7,18 +7,18 @@ from tkinter.ttk import Treeview
 
 
 class UIMain:
-    def __init__(self, sock, function):
+    def __init__(self, sock, func_close, prescriptions):
         root = tkinter.Tk()
 
         tree = Treeview(root, columns=(
-        'uid', 'medicine_id', 'descr', 'max_dose', 'rec_dose', 'min_time', 'amount', 'cur_dose', 'last_time', 'doctor',
-        'date', 'duration'))
+            'uid', 'medicine_id', 'descr', 'max_dose', 'min_time', 'amount', 'cur_dose', 'last_time',
+            'doctor',
+            'date', 'duration'))
         tree.heading('#0', text='id')
         tree.heading('uid', text='uid')
         tree.heading('medicine_id', text='medicine_id')
         tree.heading('descr', text='descr')
         tree.heading('max_dose', text='max_dose')
-        tree.heading('rec_dose', text='rec_dose')
         tree.heading('min_time', text='min_time')
         tree.heading('amount', text='amount')
         tree.heading('cur_dose', text='cur_dose')
@@ -32,7 +32,6 @@ class UIMain:
         tree.column('medicine_id', width=70)
         tree.column('descr', width=70)
         tree.column('max_dose', width=70)
-        tree.column('rec_dose', width=70)
         tree.column('min_time', width=70)
         tree.column('amount', width=70)
         tree.column('cur_dose', width=70)
@@ -43,12 +42,17 @@ class UIMain:
 
         tree.insert('', 'end', text="1", values=['3', '2', 'Tegen de hoofdpijn', '3', '5', '2', '0', '0', '0',
                                                  str(calendar.timegm(time.gmtime())), str(53135135130)])
+
+        for i in range(0, len(prescriptions)):
+            tree.insert('', 'end', text=prescriptions[i].id,
+                        values=[prescriptions[i].uid, prescriptions[i].medicine_id, prescriptions[i].descr, prescriptions[i].max_dose, prescriptions[i].min_time,
+                                prescriptions[i].amount, prescriptions[i].cur_dose, prescriptions[i].last_time, prescriptions[i].doctor, prescriptions[i].date, prescriptions[i].duration])
+
         tree.pack()
 
-        tosend = {}
-        tosend["command"] = "getprescriptions"
-        tosend["uid"] = "1"  # TODO: Hardcoded
-        sock.send(json.dumps(tosend).encode())
-
         root.mainloop()
-        function()
+        func_close()
+
+    def update_tree(self, prescriptions):
+        print("im update tree")
+        pass

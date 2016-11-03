@@ -11,13 +11,15 @@ class UILogin:
         data['command'] = 'login'
         data['username'] = self.entry_user.get()
         data['password'] = self.entry_password.get()
+        self.func_uid(self.entry_uid.get())
         print(json.dumps(data))
         self.socket.send(json.dumps(data).encode())
         self.keepAlive = True
         self.close()
 
-    def __init__(self, socket, function):
+    def __init__(self, socket, func_close, func_uid):
         self.socket = socket
+        self.func_uid = func_uid
         self.keepAlive = False
 
         # Root of window
@@ -38,10 +40,14 @@ class UILogin:
         label_user.pack()
         label_password = Label(frame_label, text="Password", width=16)
         label_password.pack()
+        label_uid = Label(frame_label, text="Patient ID", width=16)
+        label_uid.pack()
         self.entry_user = Entry(frame_entry)
         self.entry_user.pack()
         self.entry_password = Entry(frame_entry)
         self.entry_password.pack()
+        self.entry_uid = Entry(frame_entry)
+        self.entry_uid.pack()
 
         # Login Button
         labelframe_buttonspacer = LabelFrame(frame_button, height=16)
@@ -51,7 +57,7 @@ class UILogin:
 
         self.root.mainloop()
         if not self.keepAlive:
-            function()
+            func_close()
 
     def close(self):
         self.root.destroy()

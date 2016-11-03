@@ -68,11 +68,13 @@ class Prescription:
 
     @staticmethod
     def from_json_list(json_datas):
+        print("json_datas: " + str(json_datas))
         datas = json.loads(json_datas)
         prescriptions = {}
 
         for i in range(0, len(datas)):
             prescriptions[i] = Prescription.from_json(datas[str(i)])
+            print("prescription: " + str(prescriptions[i]))
 
         return prescriptions
 
