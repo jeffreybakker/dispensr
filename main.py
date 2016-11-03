@@ -132,7 +132,7 @@ class promptThread(threading.Thread):
                 doctor_test = False
                 print("Logged out as doctor id: " + str(doctor_id))
                 doctor_id = 0
-
+            #fix de push
             if cmd == "get users" and doctor_test:
                 users = database.get_users()
                 print("id\trole")
