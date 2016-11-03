@@ -69,7 +69,7 @@ def insert_user(user):
 
 def update_user(user):
     """\
-    Updates the userentry in the database
+    Updates the user entry in the database
 
     :param user: The <User> object that has to be updated in the database
     """
@@ -84,7 +84,7 @@ def uid_available(uid):
     Checks if a given UID is possible for usage
 
     :param uid: An integer representing the UID to be checked
-    :return: A boolean indicating wether the UID is available or not
+    :return: A boolean indicating whether the UID is available or not
     """
     c = get_cursor()
     cursor = c.execute('''SELECT id FROM Users WHERE id=?''', uid)
@@ -115,10 +115,10 @@ def get_user_by_uid(uid):
 
 def get_user_by_rfid(rfid):
     """
-    Returns an <User> object for the user with the given rfid
+    Returns an <User> object for the user with the given RFID
 
     :param rfid: The ID of the RFID tag of the user
-    :return: An <User> object for the given rfid, None if no user was found
+    :return: An <User> object for the given rfid, none if no user was found
     """
     c = get_cursor()
     cursor = c.execute(

@@ -4,26 +4,62 @@ import time
 
 
 def add_new_user(user):
+    """
+    Insert an <User> object into the database
+
+    :param user: an object of the <User> type
+    :return:
+    """
     database.insert_user(user)
 
 
 def update_user(user):
+    """
+    Updates the user entry in the database
+
+    :param user: The <User> object that has to be updated in the database
+    :return:
+    """
     database.update_user(user)
 
 
 def get_user(rfid):
+    """
+    Returns an <User> object for the user with the given RFID
+
+    :param rfid: The ID of the RFID tag of the user
+    :return: An <User> object for the given RFID, none if no user was found
+    """
     return database.get_user_by_rfid(rfid)
 
 
 def add_new_prescription(prescription):
+    """
+    Inserts an <Prescription> object into the database
+
+    :param prescription: An object of the <Prescription> type
+    :return:
+    """
     database.insert_prescription(prescription)
 
 
 def update_prescription(prescription):
+    """
+    Updates the prescription entry in the database
+
+    :param prescription: The <Prescription> object that has to be updated in the database
+    :return:
+    """
     database.update_prescription(prescription)
 
 
 def get_prescriptions(user):
+    """
+
+
+    :param user:
+    :return:
+    """
     prescriptions = user.get_prescriptions()
 
     print(prescriptions)
