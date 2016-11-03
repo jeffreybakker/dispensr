@@ -228,6 +228,17 @@ def update_prescription(prescription):
         '''UPDATE Prescriptions SET medicine_id=?, descr=?, max_dose=?, min_time=?, amount=?, cur_dose=?, last_time=?, doctor=?, date=?, duration=? WHERE id=?''',
         (prescription.medicine_id, prescription.descr, prescription.max_dose, prescription.min_time, prescription.amount, prescription.cur_dose, prescription.last_time, prescription.doctor, prescription.date, prescription.duration, prescription.id))
 
+def remove_prescription(prescription):
+    """\
+    Removes an <Prescription> object from the database
+
+    :param prescription: An object of the <Prescription> type
+    """
+
+    c = get_cursor()
+    c.execute(
+        '''DELETE FROM Prescriptions WHERE id=?''', (prescription.id)
+    )
 
 def get_prescriptions_by_uid(uid):
     """\
