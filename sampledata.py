@@ -11,16 +11,16 @@ def init():
 
 # id, rfid, role(pat, doc, ref), username, password
     users = [
-        User(1, 80, "pat", "", ""),
-        User(2, 68465, "doc", "c.s.jansen", "qwerty"),
-        User(3, 586812701, "pat", "", ""),
-        User(4, 3621006848, "pat", "", ""),
-        User(5, test, "ref", "", ""),
-        User(6, test, "pat", "", ""),
-        User(7, test, "pat", "", ""),
-        User(8, test, "doc", "u.aarts", "noscopez"),
-        User(9, test, "pat", "", ""),
-        User(10, test, "pat", "", "")
+        User(1, 2654408544, "pat", "", ""),  # Lars student card
+        User(2, 3519617066, "doc", "c.s.jansen", "qwerty"),  # Martijn OV - chip card personal
+        User(3, 586812701, "pat", "", ""),  # Blank pass
+        User(4, 3621006848, "pat", "", ""),  # Blue keychain
+        User(5, 3690740861, "ref", "", ""),  # Lars schoolpass 2015-2016
+        User(6, 2204658921, "pat", "", ""),  # Lars schoolpass 2014-2015
+        User(7, 2932035940, "pat", "", ""),  # Frank student card
+        User(8, 2844322267, "doc", "u.aarts", "noscopez"),  # Frank OV - Chip card anonymous
+        User(9, 243991904, "pat", "", ""),  # Arwin student card
+        User(10, 3254740226, "pat", "", "")  # Arwin OV - chip card personal
     ]
 
 # id, uid(id_patient), medicine_id, desc, max_dose, min_time, amount, cur_dose, last_time, doctor(id_doctor), date, duration
