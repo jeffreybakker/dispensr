@@ -43,8 +43,10 @@ class UILogin:
         label_uid = Label(frame_label, text="Patient ID", width=16)
         label_uid.pack()
         self.entry_user = Entry(frame_entry)
+        self.entry_user.insert(0, "u.aarts") # TODO Remove
         self.entry_user.pack()
         self.entry_password = Entry(frame_entry)
+        self.entry_password.insert(0, "noscopez") # TODO Remove
         self.entry_password.pack()
         self.entry_uid = Entry(frame_entry)
         self.entry_uid.pack()

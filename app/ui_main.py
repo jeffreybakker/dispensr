@@ -40,9 +40,6 @@ class UIMain:
         tree.column('date', width=70)
         tree.column('duration', width=70)
 
-        tree.insert('', 'end', text="1", values=['3', '2', 'Tegen de hoofdpijn', '3', '5', '2', '0', '0', '0',
-                                                 str(calendar.timegm(time.gmtime())), str(53135135130)])
-
         for i in range(0, len(prescriptions)):
             tree.insert('', 'end', text=prescriptions[i].id,
                         values=[prescriptions[i].uid, prescriptions[i].medicine_id, prescriptions[i].descr, prescriptions[i].max_dose, prescriptions[i].min_time,

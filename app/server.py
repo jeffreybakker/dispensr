@@ -15,6 +15,9 @@ auth = False
 
 
 def authenticate(username, password):
+    if username=="" or password=="":
+        return "False"
+
     database.init("../data/database.db")
 
     print(username + "," + password)
@@ -56,6 +59,7 @@ def client_thread(conn):
                 conn.send(json.dumps(tosend).encode())
             if data["command"] == "getprescriptions" and auth:
                 user = database.get_user_by_uid(data["uid"])
+                print("Info: " + str(user.id) + ", " + str(user.username) + ", " + str(user.rfid))
                 prescriptions = user.get_prescriptions()
                 tosend = {}
                 tosend["command"] = "getprescriptions"

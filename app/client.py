@@ -72,13 +72,15 @@ class connection_thread(threading.Thread):
                     if data["auth"] == "True":
                         tosend = {}
                         tosend["command"] = "getprescriptions"
-                        tosend["uid"] = uid  # TODO: Hardcoded
+                        print("uid: " + str(uid))
+                        tosend["uid"] = uid
                         print("Sending: " + str(json.dumps(tosend)))
                         self.sock.send(json.dumps(tosend).encode())
                     elif data["auth"] == "False":
-                        # messagebox.showerror("Error", "Authentication failed")
+                        #messagebox.showerror("Error", "Authentication failed")
                         print("Authentication failed")
                         running = False
+                        s.shutdown(1)
                 if data["command"] == "getprescriptions":
                     global prescriptions
                     prescriptions = {}
@@ -123,7 +125,7 @@ try:
     s.connect((HOST, PORT))
     running = True
 except socket.error as msg:
-    messagebox.showerror("Error", 'Connection failed. Error Code : ' + str(msg[0]) + ' Message ' + msg[1])
+    messagebox.showerror("Error", 'Connection failed.')
     sys.exit()
 
 connthread = connection_thread(1, "Connection Thread", s)
@@ -136,7 +138,8 @@ while blocking:
     from_main_thread_blocking()
 print("Stopped blocking Main Thread")
 
-UIMain(s, app_close, prescriptions)
+if running:
+    UIMain(s, app_close, prescriptions)
 
 
 connthread.join()
