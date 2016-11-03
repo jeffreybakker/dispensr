@@ -70,7 +70,7 @@ class communicationThread(threading.Thread):
 
             # Show the dispensed drugs in the terminal
             if len(prescriptions) > 0:
-                print("Dispensing ", len(prescriptions), " medicines")
+                print("Dispensing ", len(prescriptions), " medicine(s)")
 
                 for pres in prescriptions:
                     for i in inventory:
@@ -86,8 +86,9 @@ class communicationThread(threading.Thread):
             else:
                 print("No prescriptions available for consumption at this moment")
 
-        else:   # For doctor or nurse, assuming that they will only want to access the machine in order to refill it
+        if user.role == 'ref':   # For doctor or nurse, assuming that they will only want to access the machine in order to refill it
             control.inventory_refill()
+
 
         return True
 
