@@ -133,6 +133,29 @@ class promptThread(threading.Thread):
                 print("Logged out as doctor id: " + str(doctor_id))
                 doctor_id = 0
 
+            if cmd == "get users" and doctor_test:
+                users = database.get_users()
+                print("id\trole")
+                for user in users:
+                    print(str(user.id) + "\t" + str(user.role))
+
+            if cmd == "get prescriptions" and doctor_test:
+                choice = input("For all users y/n: ")
+                prescriptions = database.get_prescriptions()
+                if choice == "y":
+                    print("id\tmedicine\tdescription")
+                    for prescription in prescriptions:
+                        print(str(prescription.id) + "\t"  + str(prescription.medicine_id) + "\t\t\t" + str(prescription.descr))
+                elif choice == "n":
+                    user_id = int(input("id = "))
+                    print("id\tmedicine\tdescription")
+                    for prescription in prescriptions:
+                        if prescription.uid == user_id:
+                            print(str(prescription.id) + "\t" + str(prescription.medicine_id) + "\t\t\t" + str(prescription.descr))
+                else:
+                    print("Invalid input!")
+
+
             if cmd == "add prescription" and doctor_test:
 
                 prescriptions = database.get_prescriptions()
