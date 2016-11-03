@@ -66,5 +66,5 @@ class Preferences:
         # Store the change on the hard disk
         file = open(self.file_path, 'w')
         for key in self.list:
-            file.write(key + "=" + self.list[key] + "\n")
+            file.write(key + "=" + str(self.list[key]) + "\n")
         file.close()

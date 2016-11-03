@@ -51,23 +51,33 @@ class communicationThread(threading.Thread):
 
     @staticmethod
     def _scanned_card(rfid):
+        # Fetch a user from the database with the given UID
         user = control.get_user(rfid)
 
+        # Return a REJECT if the user was not found
         if user is None:
             print("No user found with the RFID:", rfid)
             return False
 
         if user.role == 'pat':
+            # If the user is a patient, get all prescriptions and the inventory
             prescriptions = control.get_prescriptions(user)
+            inventory = control.get_inventory()
 
+            # Show the dispensed drugs in the terminal
             if len(prescriptions) > 0:
-                print("Dispensing", len(prescriptions), "medicines")
+                print("Dispensing ", len(prescriptions), " medicines")
 
                 for pres in prescriptions:
-                    drug = control.get_drug_by_prescripiton(pres)
+                    for i in inventory:
+                        if pres.medicine_id == i.id:
+                            i.stock = i.stock - pres.amount
+                            database.update_inventory(i)
+                    drug = control.get_drug_by_prescription(pres)
                     print(drug.name)
-                    print("\tAmount:\t" + pres.amount)
+                    print("\tAmount:\t" + str(pres.amount))
                     print("\tDescription:\t" + pres.descr)
+                    database.commit()
 
             else:
                 print("No prescriptions available for consumption at this moment")

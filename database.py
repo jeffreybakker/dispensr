@@ -12,8 +12,7 @@ def init(file, first_time=False):
     init(file_name[, first_time])
 
     Opens the database file for reading and writing.
-    If first_time is set to True it will also run setup the database
-    for use
+    If first_time is set to True it will also run the function _setup()
     """
     global conn
 
@@ -69,7 +68,7 @@ def insert_user(user):
 
 def update_user(user):
     """\
-    Updates the userentry in the database
+    Updates the user entry in the database
 
     :param user: The <User> object that has to be updated in the database
     """
@@ -84,7 +83,7 @@ def uid_available(uid):
     Checks if a given UID is possible for usage
 
     :param uid: An integer representing the UID to be checked
-    :return: A boolean indicating wether the UID is available or not
+    :return: A boolean indicating whether the UID is available or not
     """
     c = get_cursor()
     cursor = c.execute('''SELECT id FROM Users WHERE id=?''', uid)
@@ -115,10 +114,10 @@ def get_user_by_uid(uid):
 
 def get_user_by_rfid(rfid):
     """
-    Returns an <User> object for the user with the given rfid
+    Returns an <User> object for the user with the given RFID
 
     :param rfid: The ID of the RFID tag of the user
-    :return: An <User> object for the given rfid, None if no user was found
+    :return: An <User> object for the given rfid, none if no user was found
     """
     c = get_cursor()
     cursor = c.execute(
@@ -134,11 +133,11 @@ def get_user_by_rfid(rfid):
 
 
 def get_users_by_role(role):
-    """
+    """\
     Returns a list of all users with a certain role
 
     :param role: A String of either 'pat', 'doc' or 'ref'
-    :return:
+    :return: A list of all users with a certain role
     """
     c = get_cursor()
     cursor = c.execute('''SELECT * FROM Users WHERE role=?''', role)
@@ -219,6 +218,11 @@ def insert_prescription(prescription):
 
 
 def update_prescription(prescription):
+    """\
+    Updates the prescription entry in the database
+
+    :param prescription: The <Prescription> object that has to be updated in the database
+    """
     c = get_cursor()
     c.execute(
         '''UPDATE Prescriptions SET medicine_id=?, descr=?, max_dose=?, min_time=?, amount=?, cur_dose=?, last_time=?, doctor=?, date=?, duration=? WHERE id=?''',
@@ -273,10 +277,15 @@ def insert_inventory(drug):
 
 
 def update_inventory(drug):
+    """\
+    Update the inventory entry in the database
+
+    :param drug: The <Inventory> object that has to be updated in the database
+    """
     c = get_cursor()
     c.execute(
-        '''UPDATE Inventory SET name='?', type='?', capacity=?, stock=? WHERE id=?''',
-        (drug.name, drug,type, drug.capacity, drug.stock, drug.id))
+        '''UPDATE Inventory SET name=?, type=?, capacity=?, stock=? WHERE id=?''',
+        (drug.name, drug.type, drug.capacity, drug.stock, drug.id))
 
 
 def first_available_iid():
@@ -326,7 +335,7 @@ def get_inventory():
     res = []
 
     for row in cursor:
-        res.append(Prescription.parse_raw(row))
+        res.append(Inventory.parse_raw(row))
 
     return res
 
@@ -360,7 +369,7 @@ def _setup():
             max_dose	INTEGER	        DEFAULT -1,
             min_time	INTEGER			NOT NULL,
             amount		INTEGER			NOT NULL,
-            cur_dose    INTEGER         NOT NULL,
+            cur_dose    INTEGER         DEFAULT 0,
             last_time   INTEGER(32)     NOT NULL,
             doctor      INTEGER         NOT NULL,
             date        INTEGER(32)     NOT NULL,
@@ -373,6 +382,6 @@ def _setup():
             id 			INTEGER			PRIMARY KEY		NOT NULL,
             name		VARCHAR			NOT NULL,
             type		VARCHAR(3)		NOT NULL,
-            capacity	INTEGER			NOT NULL,
+            capacity	INTEGER			DEFAULT 500,
             stock		INTEGER			DEFAULT 0
         )""")
