@@ -4,7 +4,7 @@ import time
 
 
 def add_new_user(user):
-    """
+    """\
     Insert an <User> object into the database
 
     :param user: an object of the <User> type
@@ -13,7 +13,7 @@ def add_new_user(user):
 
 
 def update_user(user):
-    """
+    """\
     Updates the user entry in the database
 
     :param user: The <User> object that has to be updated in the database
@@ -22,7 +22,7 @@ def update_user(user):
 
 
 def get_user(rfid):
-    """
+    """\
     Returns an <User> object for the user with the given RFID
 
     :param rfid: The ID of the RFID tag of the user
@@ -32,7 +32,7 @@ def get_user(rfid):
 
 
 def add_new_prescription(prescription):
-    """
+    """\
     Inserts an <Prescription> object into the database
 
     :param prescription: An object of the <Prescription> type
@@ -41,7 +41,7 @@ def add_new_prescription(prescription):
 
 
 def update_prescription(prescription):
-    """
+    """\
     Updates the prescription entry in the database
 
     :param prescription: The <Prescription> object that has to be updated in the database
@@ -50,7 +50,7 @@ def update_prescription(prescription):
 
 
 def get_prescriptions(user):
-    """
+    """\
     Returns a list of prescriptions that need to be handed out at that time to the given user
 
     :param user: An object of the <User> type
@@ -105,7 +105,7 @@ def get_prescriptions(user):
 
 
 def add_new_inventory(drug):
-    """
+    """\
     Inserts an <Inventory> object into the database
 
     :param drug: An object of the <Inventory> type
@@ -114,7 +114,7 @@ def add_new_inventory(drug):
 
 
 def update_inventory(drug):
-    """
+    """\
     Update the inventory entry in the database
 
     :param drug: The <Inventory> object that has to be updated in the database
@@ -123,7 +123,7 @@ def update_inventory(drug):
 
 
 def get_inventory():
-    """
+    """\
     Returns a list of all <Inventory objects in the database>
 
     :return: A list of <Inventory> objects
@@ -132,7 +132,7 @@ def get_inventory():
 
 
 def get_drug_by_prescripiton(prescription):
-    """
+    """\
     Returns the <Inventory> object for the given drug ID
 
     :param prescription: The drug ID
@@ -142,7 +142,7 @@ def get_drug_by_prescripiton(prescription):
 
 
 def inventory_refill():
-    """
+    """\
     Sets the stock of all drugs in the inventory to its maximum capacity
     """
     inventory = get_inventory()

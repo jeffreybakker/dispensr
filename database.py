@@ -12,8 +12,7 @@ def init(file, first_time=False):
     init(file_name[, first_time])
 
     Opens the database file for reading and writing.
-    If first_time is set to True it will also run setup the database
-    for use
+    If first_time is set to True it will also run the function _setup()
     """
     global conn
 
@@ -134,11 +133,11 @@ def get_user_by_rfid(rfid):
 
 
 def get_users_by_role(role):
-    """
+    """\
     Returns a list of all users with a certain role
 
     :param role: A String of either 'pat', 'doc' or 'ref'
-    :return:
+    :return: A list of all users with a certain role
     """
     c = get_cursor()
     cursor = c.execute('''SELECT * FROM Users WHERE role=?''', role)
@@ -219,6 +218,11 @@ def insert_prescription(prescription):
 
 
 def update_prescription(prescription):
+    """\
+    Updates the prescription entry in the database
+
+    :param prescription: The <Prescription> object that has to be updated in the database
+    """
     c = get_cursor()
     c.execute(
         '''UPDATE Prescriptions SET medicine_id=?, descr=?, max_dose=?, min_time=?, amount=?, cur_dose=?, last_time=?, doctor=?, date=?, duration=? WHERE id=?''',
@@ -273,6 +277,11 @@ def insert_inventory(drug):
 
 
 def update_inventory(drug):
+    """\
+    Update the inventory entry in the database
+
+    :param drug: The <Inventory> object that has to be updated in the database
+    """
     c = get_cursor()
     c.execute(
         '''UPDATE Inventory SET name='?', type='?', capacity=?, stock=? WHERE id=?''',
