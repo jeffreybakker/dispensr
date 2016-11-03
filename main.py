@@ -3,6 +3,9 @@ import hashlib
 import arduino
 import control
 import database
+import calendar
+import time
+from prescription import Prescription
 from preferences import Preferences
 
 # Setup Variables
@@ -104,8 +107,42 @@ class promptThread(threading.Thread):
             cmd = input("> ")
             if cmd == "exit":
                 running = False
+            if cmd == "new prescription":
+                prescriptions = database.get_prescriptions()
+                prescription_list = []
+                for i in prescriptions:
+                    prescription_list.append(i.id)
+                prescription_id = int(max(prescription_list) + 1)
+                patient_id = int(input("Patient id = "))
+                medicine_id = int(input("Medicine id = "))
+                descr = input("Description of use = ")
+                max_dose = int(input("Daily max dose = "))
+                min_time = int(input("Minimum time between dispenses in seconds = ")) #TODO time conversion something
+                amount = int(input("Amount of medicine per dispense/dose = "))
+                cur_dose = 0
+                doctor_id = int(input("Doctor id = "))
+                duration = int(input("Prescription duration in days = ")) * 86400
+                date = int(calendar.timegm(time.gmtime()))
 
-        # threads.remove(self)
+                doctors = database.get_users_by_role('doc')
+                doctor_test = False
+                for doctor in doctors:
+                    if doctor_id == doctor.id:
+                        users = database.get_users()
+                        patient_test = False
+                        for user in users:
+                            if patient_id == user.id:
+                                print("New prescription added.")
+                                database.insert_prescription(Prescription.parse_raw([prescription_id, patient_id, medicine_id, descr, max_dose, min_time, amount, cur_dose, date, doctor_id, duration, date]))
+                                database.commit()
+                                patient_test = True
+                        if not patient_test:
+                            print("Patient does not exist!")
+                        doctor_test = True
+                if not doctor_test:
+                    print("No doctor associated to id: " + doctor_id)
+
+         # threads.remove(self)
         print("Exiting " + self.name)
 
 

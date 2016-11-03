@@ -140,7 +140,7 @@ def get_users_by_role(role):
     :return: A list of all users with a certain role
     """
     c = get_cursor()
-    cursor = c.execute('''SELECT * FROM Users WHERE role=?''', role)
+    cursor = c.execute('''SELECT * FROM Users WHERE role=?''', (role,))
 
     res = []
 
