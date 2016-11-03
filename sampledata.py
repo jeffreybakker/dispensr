@@ -12,9 +12,15 @@ def init():
 # id, rfid, role(pat, doc, ref), username, password
     users = [
         User(1, 80, "pat", "", ""),
-        User(2, 68465, "doc", "hoi", "wachtwoord"),
+        User(2, 68465, "doc", "c.s.jansen", "qwerty"),
         User(3, 586812701, "pat", "", ""),
-        User(4, 3621006848, "pat", "", "")
+        User(4, 3621006848, "pat", "", ""),
+        User(5, test, "ref", "", ""),
+        User(6, test, "pat", "", ""),
+        User(7, test, "pat", "", ""),
+        User(8, test, "doc", "u.aarts", "noscopez"),
+        User(9, test, "pat", "", ""),
+        User(10, test, "pat", "", "")
     ]
 
 # id, uid(id_patient), medicine_id, desc, max_dose, min_time, amount, cur_dose, last_time, doctor(id_doctor), date, duration
