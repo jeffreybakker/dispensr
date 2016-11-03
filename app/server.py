@@ -52,12 +52,16 @@ def client_thread(conn):
                 tosend["auth"] = authenticate(data["username"], data["password"])
                 if (tosend["auth"] == "True"):
                     auth = True
-                print("Sending: "+json.dumps(tosend))
+                print("Sending: " + json.dumps(tosend))
                 conn.send(json.dumps(tosend).encode())
             if data["command"] == "getprescriptions" and auth:
                 user = database.get_user_by_uid(data["uid"])
                 prescriptions = user.get_prescriptions()
-                print ("getprescriptions")
+                tosend = {}
+                tosend["command"] = "getprescriptions"
+                tosend["data"] = Prescription.to_json_list(prescriptions)
+                print("Sending: " + str(tosend))
+                conn.send(json.dumps(tosend).encode())
 
     # Properly close the connection
     conn.shutdown(1)

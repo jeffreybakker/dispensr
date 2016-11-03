@@ -4,6 +4,7 @@ import sys
 import json
 import threading
 import tkinter
+from prescription import Prescription
 from tkinter import messagebox
 from ui_login import UILogin
 from ui_loading import UILoading
@@ -63,6 +64,10 @@ class connection_thread(threading.Thread):
                         #messagebox.showerror("Error", "Authentication failed")
                         print("Authentication failed")
                         running = False
+                if data["command"]=="getprescriptions":
+                    prescriptions = {}
+                    prescriptions = Prescription.from_json_list(data["data"])
+
 
         print("Exiting " + self.name)
 
