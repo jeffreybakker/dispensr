@@ -66,7 +66,7 @@ class communicationThread(threading.Thread):
                 for pres in prescriptions:
                     drug = control.get_drug_by_prescripiton(pres)
                     print(drug.name)
-                    print("\tAmount:\t" + pres.amount)
+                    print("\tAmount:\t" + str(pres.amount))
                     print("\tDescription:\t" + pres.descr)
 
             else:
