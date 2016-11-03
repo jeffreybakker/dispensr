@@ -131,7 +131,7 @@ def get_inventory():
     return database.get_inventory()
 
 
-def get_drug_by_prescripiton(prescription):
+def get_drug_by_prescription(prescription):
     """\
     Returns the <Inventory> object for the given drug ID
 

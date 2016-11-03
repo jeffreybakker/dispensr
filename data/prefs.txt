@@ -1,4 +1,4 @@
-notifications=False
-arduino_port=COM3
 database=data/database.db
+notifications=False
 first_time=False
+arduino_port=COM3

@@ -284,8 +284,8 @@ def update_inventory(drug):
     """
     c = get_cursor()
     c.execute(
-        '''UPDATE Inventory SET name='?', type='?', capacity=?, stock=? WHERE id=?''',
-        (drug.name, drug,type, drug.capacity, drug.stock, drug.id))
+        '''UPDATE Inventory SET name=?, type=?, capacity=?, stock=? WHERE id=?''',
+        (drug.name, drug.type, drug.capacity, drug.stock, drug.id))
 
 
 def first_available_iid():
