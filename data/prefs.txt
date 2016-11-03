@@ -1,4 +1,4 @@
 database=data/database.db
-notifications=False
 first_time=False
+notifications=False
 arduino_port=COM3
