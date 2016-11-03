@@ -237,7 +237,7 @@ def remove_prescription(prescription):
 
     c = get_cursor()
     c.execute(
-        '''DELETE FROM Prescriptions WHERE id=?''', (prescription.id)
+        '''DELETE FROM Prescriptions WHERE id=?''', (prescription.id,)
     )
 
 def get_prescriptions_by_uid(uid):
