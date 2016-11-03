@@ -5,6 +5,7 @@ import json
 import threading
 import tkinter
 import queue
+import time
 from prescription import Prescription
 from tkinter import messagebox
 from ui_login import UILogin
@@ -15,7 +16,13 @@ HOST, PORT = "127.0.0.1", 9999
 running = False
 blocking = False
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+prescriptions = None
+uid = -1
 
+def app_set_uid(value):
+    global uid
+    uid = value
+    print('uid set')
 
 def app_close():
     running = False
@@ -23,9 +30,9 @@ def app_close():
     print("running = False")
 
 
-def app_main(sock, function):
+def app_main(sock, func_close, func_queue):
     print("executing app_main")
-    ui_main = UIMain(sock, function)
+    ui_main = UIMain(sock, func_close, func_queue)
 
 
 def unblock_main():
@@ -63,14 +70,24 @@ class connection_thread(threading.Thread):
 
                 if data["command"] == "authlogin":
                     if data["auth"] == "True":
-                        from_dummy_thread(lambda: app_main(self.sock, app_close))
+                        tosend = {}
+                        tosend["command"] = "getprescriptions"
+                        print("uid: " + str(uid))
+                        tosend["uid"] = uid
+                        print("Sending: " + str(json.dumps(tosend)))
+                        self.sock.send(json.dumps(tosend).encode())
                     elif data["auth"] == "False":
-                        # messagebox.showerror("Error", "Authentication failed")
+                        #messagebox.showerror("Error", "Authentication failed")
                         print("Authentication failed")
                         running = False
+                        s.shutdown(1)
                 if data["command"] == "getprescriptions":
+                    global prescriptions
                     prescriptions = {}
                     prescriptions = Prescription.from_json_list(data["data"])
+                    from_dummy_thread(lambda : {unblock_main()})
+
+
 
         print("Exiting " + self.name)
         from_dummy_thread(lambda: unblock_main())
@@ -90,6 +107,7 @@ def from_main_thread_blocking():
 
 
 def from_main_thread_nonblocking():
+    print("nonblocking")
     while True:
         try:
             callback = callback_queue.get(False)  # doesn't block
@@ -107,18 +125,22 @@ try:
     s.connect((HOST, PORT))
     running = True
 except socket.error as msg:
-    messagebox.showerror("Error", 'Connection failed. Error Code : ' + str(msg[0]) + ' Message ' + msg[1])
+    messagebox.showerror("Error", 'Connection failed.')
     sys.exit()
 
 connthread = connection_thread(1, "Connection Thread", s)
 connthread.start()
-ui_login = UILogin(s, app_close)
+ui_login = UILogin(s, app_close, app_set_uid)
 
 blocking = True
 print("Blocking Main Thread")
 while blocking:
     from_main_thread_blocking()
 print("Stopped blocking Main Thread")
+
+if running:
+    UIMain(s, app_close, prescriptions)
+
 
 connthread.join()
 s.shutdown(1)
