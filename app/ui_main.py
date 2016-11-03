@@ -6,7 +6,7 @@ from tkinter import ttk
 from tkinter.ttk import Treeview
 
 class UIMain:
-    def __init__(self, sock):
+    def __init__(self, sock, function):
         root = tkinter.Tk()
 
         tree = Treeview(root, columns=('uid', 'medicine_id', 'descr', 'max_dose', 'rec_dose', 'min_time', 'amount', 'cur_dose', 'last_time', 'doctor', 'date', 'duration'))
@@ -49,3 +49,4 @@ class UIMain:
         tree.pack()
 
         root.mainloop()
+        function()

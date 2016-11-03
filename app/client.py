@@ -21,10 +21,13 @@ def encrypt(toencr):
     return hashlib.sha512(toencr + salt)
 
 
-def mainapp(sock):
-    ui_main = UIMain(sock)
+def app_main(sock, function):
+    ui_main = UIMain(sock, function)
 
-
+def app_close():
+    running = False
+    s.shutdown(1)
+    print("running = False")
 
 # Connection thread
 class connection_thread(threading.Thread):
@@ -55,7 +58,7 @@ class connection_thread(threading.Thread):
 
                 if data["command"] == "authlogin":
                     if data["auth"] == "True":
-                        mainapp(self.sock)
+                        app_main(self.sock, app_close)
                     elif data["auth"] == "False":
                         #messagebox.showerror("Error", "Authentication failed")
                         print("Authentication failed")
@@ -75,13 +78,8 @@ except socket.error as msg:
 connthread = connection_thread(1, "Connection Thread", s)
 connthread.start()
 
-ui_login = UILogin(s)
-#ui_loading_root = tkinter.Tk()
-#ui_loading = UILoading(ui_loading_root)
+ui_login = UILogin(s, app_close)
 
-running = False
-s.shutdown(1)
 connthread.join()
+s.shutdown(1)
 s.close()
-
-# received = sock.recv(1024)
