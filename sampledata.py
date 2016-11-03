@@ -26,7 +26,7 @@ def init():
     # Prescription class contains: id, uid(id_patient), medicine_id, desc, max_dose, min_time, amount, cur_dose,
     # last_time, doctor(id_doctor), date, duration
     prescriptions = [
-        Prescription(1, 3, 2, "Tegen de hoofdpijn", 3, 5, 2, 0, 0, 0, calendar.timegm(time.gmtime()), 53135135130),
+        Prescription(1, 3, 2, "Tegen de keelpijn", 3, 5, 2, 0, 0, 0, calendar.timegm(time.gmtime()), 53135135130),
         Prescription(2, 4, 3, "Niet op kauwen", 4, 10, 1, 0, 0, 0, calendar.timegm(time.gmtime()), 6843515430),
         Prescription(3, 2, 1, "Tegen de hoofdpijn, oplossen in een bodempje water", 5, 2, 1, 0, 0, 0,
                      calendar.timegm(time.gmtime()), 45413516840)
