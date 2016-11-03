@@ -70,7 +70,7 @@ class communicationThread(threading.Thread):
 
             # Show the dispensed drugs in the terminal
             if len(prescriptions) > 0:
-                print("Dispensing ", len(prescriptions), " medicines")
+                print("Dispensing ", len(prescriptions), " medicine(s)")
 
                 for pres in prescriptions:
                     for i in inventory:
@@ -86,8 +86,9 @@ class communicationThread(threading.Thread):
             else:
                 print("No prescriptions available for consumption at this moment")
 
-        else:   # For doctor or nurse, assuming that they will only want to access the machine in order to refill it
+        if user.role == 'ref':   # For doctor or nurse, assuming that they will only want to access the machine in order to refill it
             control.inventory_refill()
+
 
         return True
 
@@ -102,6 +103,9 @@ class promptThread(threading.Thread):
     def run(self):
         print("Starting " + self.name)
         global running
+        global doctor_test
+        global doctor_id
+        doctor_test = False
 
         # Prompt loop
         while running:
@@ -109,48 +113,61 @@ class promptThread(threading.Thread):
             if cmd == "exit":
                 running = False
 
-            if cmd == "create prescription":
+            if cmd == "login":
+                doctors = database.get_users_by_role('doc')
+                print("Please login to make changes.")
+                login_username = input("Username: ")
+                login_password = input("Password: ")
+                for doctor in doctors:
+                    if doctor.username == login_username and doctor.password == login_password:
+                        doctor_id = doctor.id
+                        print("Logged in as doctor id: " + str(doctor_id))
+                        doctor_test = True
+                if not doctor_test:
+                    print("Invalid credentials!")
+            if cmd == "test":
+                print(doctor_test)
+
+            if cmd == "logout" and doctor_test:
+                doctor_test = False
+                print("Logged out as doctor id: " + str(doctor_id))
+                doctor_id = 0
+
+            if cmd == "add prescription" and doctor_test:
+
                 prescriptions = database.get_prescriptions()
                 prescription_list = []
-                for i in prescriptions:
-                    prescription_list.append(i.id)
+                for prescription in prescriptions:
+                    prescription_list.append(prescription.id)
                 prescription_id = int(max(prescription_list) + 1)
                 patient_id = int(input("Patient id = "))
                 medicine_id = int(input("Medicine id = "))
-                descr = input("Description of use = ")
+                description = input("Description of use = ")
                 max_dose = int(input("Daily max dose = "))
                 min_time = int(input("Minimum time between dispenses in seconds = ")) #TODO time conversion something
                 amount = int(input("Amount of medicine per dispense/dose = "))
                 cur_dose = 0
-                doctor_id = int(input("Doctor id = "))
                 duration = int(input("Prescription duration in days = ")) * 86400
                 date = int(calendar.timegm(time.gmtime()))
 
-                doctors = database.get_users_by_role('doc')
-                doctor_test = False
-                for doctor in doctors:
-                    if doctor_id == doctor.id:
-                        users = database.get_users()
-                        patient_test = False
-                        for user in users:
-                            if patient_id == user.id:
-                                print("New prescription added.")
-                                database.insert_prescription(Prescription.parse_raw([prescription_id, patient_id, medicine_id, descr, max_dose, min_time, amount, cur_dose, date, doctor_id, duration, date]))
-                                database.commit()
-                                patient_test = True
-                        if not patient_test:
-                            print("Patient does not exist!")
-                        doctor_test = True
-                if not doctor_test:
-                    print("No doctor associated to id: " + doctor_id)
+                users = database.get_users()
+                patient_test = False
+                for user in users:
+                    if patient_id == user.id:
+                        print("New prescription added with id: " + str(prescription_id))
+                        database.insert_prescription(Prescription.parse_raw([prescription_id, patient_id, medicine_id, description, max_dose, min_time, amount, cur_dose, date, doctor_id, duration, date]))
+                        database.commit()
+                        patient_test = True
+                if not patient_test:
+                    print("Patient does not exist!")
 
-            if cmd == "remove prescription":
+            if cmd == "remove prescription" and doctor_test:
                 prescription_id = int(input("prescription id = "))
                 database.remove_prescription(prescription_id)
                 database.commit()
                 print("Prescription removed.")
 
-            if cmd == "new user":
+            if cmd == "add user" and doctor_test:
                 users = database.get_users()
                 user_list = []
                 for user in users:
@@ -165,10 +182,10 @@ class promptThread(threading.Thread):
                     new_username = ""
                     new_password = ""
                 database.insert_user(User.parse_raw([user_id, rfid, role, new_username, new_password]))
-                print("New user added.")
                 database.commit()
+                print("New user added with id: " + str(user_id))
 
-            if cmd == "remove user":
+            if cmd == "remove user" and doctor_test:
                 user_id = int(input("User id = "))
                 database.remove_user(user_id)
                 database.commit()
