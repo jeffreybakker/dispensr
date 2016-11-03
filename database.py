@@ -360,7 +360,7 @@ def _setup():
             max_dose	INTEGER	        DEFAULT -1,
             min_time	INTEGER			NOT NULL,
             amount		INTEGER			NOT NULL,
-            cur_dose    INTEGER         NOT NULL,
+            cur_dose    INTEGER         DEFAULT 0,
             last_time   INTEGER(32)     NOT NULL,
             doctor      INTEGER         NOT NULL,
             date        INTEGER(32)     NOT NULL,
