@@ -6,6 +6,7 @@ import database
 import calendar
 import time
 from prescription import Prescription
+from user import User
 from preferences import Preferences
 
 # Setup Variables
@@ -107,7 +108,8 @@ class promptThread(threading.Thread):
             cmd = input("> ")
             if cmd == "exit":
                 running = False
-            if cmd == "new prescription":
+
+            if cmd == "create prescription":
                 prescriptions = database.get_prescriptions()
                 prescription_list = []
                 for i in prescriptions:
@@ -141,6 +143,37 @@ class promptThread(threading.Thread):
                         doctor_test = True
                 if not doctor_test:
                     print("No doctor associated to id: " + doctor_id)
+
+            if cmd == "remove prescription":
+                prescription_id = int(input("prescription id = "))
+                database.remove_prescription(prescription_id)
+                database.commit()
+                print("Prescription removed.")
+
+            if cmd == "new user":
+                users = database.get_users()
+                user_list = []
+                for user in users:
+                    user_list.append(user.id)
+                user_id = int(max(user_list) + 1)
+                rfid = int(input("RFID = "))
+                role = input("role(pat/doc/ref) = ")
+                if role == 'doc':
+                    new_username = input("New user username = ")
+                    new_password = input("New user password = ")
+                else:
+                    new_username = ""
+                    new_password = ""
+                database.insert_user(User.parse_raw([user_id, rfid, role, new_username, new_password]))
+                print("New user added.")
+                database.commit()
+
+            if cmd == "remove user":
+                user_id = int(input("User id = "))
+                database.remove_user(user_id)
+                database.commit()
+                print("User removed.")
+
 
          # threads.remove(self)
         print("Exiting " + self.name)
