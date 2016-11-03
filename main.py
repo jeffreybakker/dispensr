@@ -179,6 +179,48 @@ class promptThread(threading.Thread):
         print("Exiting " + self.name)
 
 
+# Communication Thread
+class TimeModel(threading.Thread):
+    def __init__(self, threadID, name):
+        threading.Thread.__init__(self)
+        self.threadID = threadID
+        self.name = name
+
+    def run(self):
+        # Imports
+        import notification
+        from concurrent.futures import thread
+
+        # Make global variables available in local context
+        global running, pref
+
+        # Initialize everything
+        print("Starting " + self.name)
+        database.init(pref.get_preference("database"))
+
+        # A refill every 24 hours
+        refill = 24 * 60 * 60
+
+        cur_time = int(calendar.timegm(time.gmtime()))
+        last_time = cur_time - (cur_time % refill)
+
+        # Run the code
+        while running:
+            # Calculate next refill
+            cur_time = int(calendar.timegm(time.gmtime()))
+            new = last_time + refill
+
+            # Refill?
+            if cur_time > new:
+                notification.send_refill()
+                control.inventory_refill()
+                last_time = new
+            else: # Wait till refill
+                thread.sleep(new - cur_time)
+
+        database.close()
+
+
 # Encrypt RFID-tag
 def encryptRFID(tag):
     salt = 10  # TODO: replace with database UID or something
@@ -189,12 +231,18 @@ def encryptRFID(tag):
 print("Starting Main Thread")
 
 running = True
+
 communication_thread = communicationThread(1, "Communication Thread")
 communication_thread.start()
 threads.append(communication_thread)
+
 prompt_thread = promptThread(2, "Prompt Thread")
 prompt_thread.start()
 threads.append(prompt_thread)
+
+time_thread = TimeModel(3, "Time Model Thread")
+time_thread.start()
+threads.append(time_thread)
 
 # Wait for all threads to complete
 for t in threads:
