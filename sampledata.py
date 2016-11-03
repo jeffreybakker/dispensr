@@ -9,7 +9,7 @@ def init():
     from inventory import Inventory
 
 
-# id, rfid, role(pat, doc, ref), username, password
+    # id, rfid, role(pat, doc, ref), username, password
     users = [
         User(1, 2654408544, "pat", "", ""),  # Lars student card
         User(2, 3519617066, "doc", "c.s.jansen", "qwerty"),  # Martijn OV - chip card personal
@@ -23,18 +23,26 @@ def init():
         User(10, 3254740226, "pat", "", "")  # Arwin OV - chip card personal
     ]
 
-# id, uid(id_patient), medicine_id, desc, max_dose, min_time, amount, cur_dose, last_time, doctor(id_doctor), date, duration
+    # id, uid(id_patient), medicine_id, desc, max_dose, min_time, amount, cur_dose, last_time, doctor(id_doctor), date, duration
     prescriptions = [
         Prescription(1, 3, 2, "Tegen de hoofdpijn", 3, 5, 2, 0, 0, 0, calendar.timegm(time.gmtime()), 53135135130),
         Prescription(2, 4, 3, "Niet op kauwen", 4, 10, 1, 0, 0, 0, calendar.timegm(time.gmtime()), 6843515430),
-        Prescription(3, 2, 1, "Tegen de hoofdpijn, oplossen in een bodempje water", 5, 2, 1, 0, 0, 0, calendar.timegm(time.gmtime()), 45413516840)
+        Prescription(3, 2, 1, "Tegen de hoofdpijn, oplossen in een bodempje water", 5, 2, 1, 0, 0, 0, calendar.timegm(time.gmtime()),45413516840),
     ]
 
-# id, name, type, capacity, stock
+    # id, name, type, capacity, stock
     drugs = [
         Inventory(1, "Paracetamol", "sol", 500, 411),
         Inventory(2, "Hoestdrank", "liq", 500, 414),
-        Inventory(3, "Asperine", "pil", 500, 429)
+        Inventory(3, "Asperine", "pil", 500, 429),
+        Inventory(4, "Kinzalkomb", "pil", 500, 486),
+        Inventory(5, "Xatral", "liq", 500, 435),
+        Inventory(6, "Stromectol", "liq", 500, 411),
+        Inventory(7, "Beryx", "sol", 500, 489),
+        Inventory(8, "Niaspan", "liq", 500, 477),
+        Inventory(9, "Norgestimaat", "pil", 500, 305),
+        Inventory(10, "Venlafaxine", "pil", 500, 458),
+        Inventory(11, "Visanne", "sol", 500, 479)
     ]
 
     database.init("data/database.db", True)

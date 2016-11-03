@@ -382,6 +382,6 @@ def _setup():
             id 			INTEGER			PRIMARY KEY		NOT NULL,
             name		VARCHAR			NOT NULL,
             type		VARCHAR(3)		NOT NULL,
-            capacity	INTEGER			NOT NULL,
+            capacity	INTEGER			DEFAULT 500,
             stock		INTEGER			DEFAULT 0
         )""")
