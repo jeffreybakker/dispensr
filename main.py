@@ -130,7 +130,7 @@ class promptThread(threading.Thread):
                 doctor_test = False
                 print("Logged out as doctor id: " + str(doctor_id))
                 doctor_id = 0
-#test
+
             if cmd == "update rfid" and doctor_test:
                 user_id = input("User id = ")
                 user = database.get_user_by_uid(user_id)
