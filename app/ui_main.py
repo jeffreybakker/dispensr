@@ -42,8 +42,10 @@ class UIMain:
 
         for i in range(0, len(prescriptions)):
             tree.insert('', 'end', text=prescriptions[i].id,
-                        values=[prescriptions[i].uid, prescriptions[i].medicine_id, prescriptions[i].descr, prescriptions[i].max_dose, prescriptions[i].min_time,
-                                prescriptions[i].amount, prescriptions[i].cur_dose, prescriptions[i].last_time, prescriptions[i].doctor, prescriptions[i].date, prescriptions[i].duration])
+                        values=[prescriptions[i].uid, prescriptions[i].medicine_id, prescriptions[i].descr,
+                                prescriptions[i].max_dose, prescriptions[i].min_time, prescriptions[i].amount,
+                                prescriptions[i].cur_dose, prescriptions[i].last_time, prescriptions[i].doctor,
+                                prescriptions[i].date, prescriptions[i].duration])
 
         tree.pack()
 
