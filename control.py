@@ -153,4 +153,5 @@ def inventory_refill():
 
 
 def notify_inventory():
-    pass  # TODO: add a notification
+    import notification
+    notification.send_refill()

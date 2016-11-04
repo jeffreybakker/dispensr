@@ -1,5 +1,5 @@
-DEFAULT_TO_NAME = 'Joffrey The Drug Meistahr'
-DEFAULT_TO_ADDR = 'jeffrey.bakker@gmail.com'
+DEFAULT_TO_NAME = 'You'
+DEFAULT_TO_ADDR = 'rufiw@stromox.com'
 
 
 class Email:
@@ -29,11 +29,11 @@ class Email:
         msg.attach(MIMEText(self.body))
 
         # Make a secure connection with the mailserver
-        server = smtplib.SMTP('mail.jbakker.co')
-        server.starttls()
+        server = smtplib.SMTP('smtp.utwente.nl')
+        # server.starttls()
 
         # Login onto the mailserver
-        server.login('drug.dispensr@jbakker.co', 'dispensr')
+        # server.login('', '')
 
         text = msg.as_string()
 
@@ -90,12 +90,12 @@ class Email:
         self._body = value
 
 # Some default templates
-DEFAULT_TAKE_MEDS = Email('Drug Dispensr', 'drug.dispensr@jbakker.co',
+DEFAULT_TAKE_MEDS = Email('Drug Dispensr', 'drugs@dispen.sr',
                           DEFAULT_TO_NAME, DEFAULT_TO_ADDR,
                           'Take your meds now',
                           'Do it now!')
 
-DEFAULT_FILL_NOW = Email('Drug Dispensr', 'drug.dispensr@jbakker.co',
+DEFAULT_FILL_NOW = Email('Drug Dispensr', 'drugs@dispen.sr',
                          DEFAULT_TO_NAME, DEFAULT_TO_ADDR,
                          'Refill the dispenser',
                          'Do it now!')
