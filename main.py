@@ -8,6 +8,7 @@ import time
 from prescription import Prescription
 from user import User
 from preferences import Preferences
+import sys
 
 # Setup Variables
 pref = Preferences()
@@ -115,6 +116,9 @@ class promptThread(threading.Thread):
             cmd = input("> ")
             if cmd == "exit":
                 running = False
+                database.close()
+                print("Exiting now")
+                sys.exit(0)
 
             if cmd == "login":
                 doctors = database.get_users_by_role('doc')
@@ -242,7 +246,17 @@ class promptThread(threading.Thread):
                 print("User removed.")
 
             if cmd == "help":
-                print("Commands: login, logout, exit, get prescriptions, add prescription, remove prescription, add user, remove user, update user, update rfid")
+                commands = ["login",
+                            "logout",
+                            "exit",
+                            "get prescriptions",
+                            "add prescription",
+                            "remove prescription",
+                            "add user",
+                            "remove user",
+                            "update credentials",
+                            "update rfid"]
+                print("Commands:", commands)
 
 
          # threads.remove(self)
