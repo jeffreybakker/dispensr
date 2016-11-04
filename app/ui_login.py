@@ -5,7 +5,7 @@ from tkinter import *
 
 class UILogin:
 
-    # Login button callback
+    # Login button callback, sends the request to the server and closes this ui
     def button_login_callback(self):
         data = {}
         data['command'] = 'login'
@@ -57,13 +57,16 @@ class UILogin:
         button_login = Button(frame_button, text="Login", width=7, command=self.button_login_callback)
         button_login.pack()
 
+        # Preform the main loop, runs on the main thread
         self.root.mainloop()
+        # If the program has to close because no request to the server was send (user clicked on x), notify the
+        # client.py of this
         if not self.keepAlive:
             func_close()
 
     def close(self):
         self.root.destroy()
 
-
+# Test
 if __name__ == "__main__":
     ui = UILogin(None)

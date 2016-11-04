@@ -1,3 +1,4 @@
+# Some default variables
 DEFAULT_TO_NAME = 'You'
 DEFAULT_TO_ADDR = 'rufiw@stromox.com'
 
@@ -102,8 +103,18 @@ DEFAULT_FILL_NOW = Email('Drug Dispensr', 'drugs@dispen.sr',
 
 
 def send_refill():
+    """
+    Sends an email to the default refiller saying that he or she has to
+    refill the Drug Dispenser
+    """
     DEFAULT_FILL_NOW.send()
 
 
 def send_take_med():
+    """
+    Sends an email to some email-adress that he or she has to take his
+    or her medication immediately.
+
+    NOTE: Currently not implemented
+    """
     DEFAULT_TAKE_MEDS.send()
