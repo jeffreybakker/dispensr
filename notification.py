@@ -1,4 +1,4 @@
-DEFAULT_TO_NAME = 'Jeffrey'
+DEFAULT_TO_NAME = 'You'
 DEFAULT_TO_ADDR = 'jeffrey.bakker@gmail.com'
 
 
