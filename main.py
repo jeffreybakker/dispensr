@@ -242,7 +242,7 @@ class promptThread(threading.Thread):
                 print("User removed.")
 
             if cmd == "help":
-                print("Commands: login, logout, exit, get prescriptions, add prescription, remove prescription, add user, remove user")
+                print("Commands: login, logout, exit, get prescriptions, add prescription, remove prescription, add user, remove user, update user, update rfid")
 
 
          # threads.remove(self)
