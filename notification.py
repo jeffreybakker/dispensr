@@ -1,5 +1,5 @@
 DEFAULT_TO_NAME = 'You'
-DEFAULT_TO_ADDR = 'jeffrey.bakker@gmail.com'
+DEFAULT_TO_ADDR = 'rufiw@stromox.com'
 
 
 class Email:
