@@ -57,7 +57,7 @@ uint32_t adler32(unsigned char *data, uint8_t len) {
     uint32_t a = 1, b = 0;
     uint8_t index;
 
-    /* Process each byte of the data in order */
+    // Calculate the hash
     for (index = 0; index < len; ++index)
     {
         a = (a + data[index]) % MOD_ADLER;

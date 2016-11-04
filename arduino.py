@@ -6,8 +6,11 @@ import serial
 
 
 class Interface(object):
+    """ The communication interface for the RFID reader """
+
     VERSION = 0x01
 
+    # Protocol opcodes
     OP_READ = 0x00
     OP_ACCEPT = 0x01
     OP_REJECT = 0x02
@@ -80,15 +83,18 @@ class Interface(object):
     def unpack(self, data):
         """ Decode and decrypt a packet """
 
+        # Decode the protocol parameters
         version = data[0]
         count = data[1]
         length = data[2]
         msg = self.decrypt(data[3:3+length])
         hmac = data[3+length:]
 
+        # Unknown version/header, raise an exception
         if version != 1:
             raise Exception('Unknown protocol version: {}'.format(version))
 
+        # Verify the HMAC
         verify = self.hmac(data[:-4])
         if verify != hmac:
             raise Exception('Invalid HMAC signature')
