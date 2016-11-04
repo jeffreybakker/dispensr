@@ -14,8 +14,8 @@ def init():
         User(1, 2654408544, "pat", "", ""),  # Lars student card
         User(2, 3519617066, "doc", "c.s.jansen", "qwerty"),  # Martijn OV - chip card personal
         User(3, 586812701, "pat", "", ""),  # Blank pass
-        User(4, 3621006848, "pat", "", ""),  # Blue keychain
-        User(5, 3690740861, "ref", "", ""),  # Lars schoolpass 2015-2016
+        User(4, 3690740861, "pat", "", ""),  # Lars schoolpass 2015-2016
+        User(5, 3621006848, "ref", "", ""),  # Blue keychain
         User(6, 2204658921, "pat", "", ""),  # Lars schoolpass 2014-2015
         User(7, 2932035940, "pat", "", ""),  # Frank student card
         User(8, 2844322267, "doc", "u.aarts", "noscopez"),  # Frank OV - Chip card anonymous
