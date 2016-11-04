@@ -63,6 +63,8 @@ class communicationThread(threading.Thread):
             print("No user found with the RFID:", rfid)
             return False
 
+        print("User found:", user.id)
+
         if user.role == 'pat':
             # If the user is a patient, get all prescriptions and the inventory
             prescriptions = control.get_prescriptions(user)
@@ -88,6 +90,7 @@ class communicationThread(threading.Thread):
 
         if user.role == 'ref':   # For doctor or nurse, assuming that they will only want to access the machine in order to refill it
             control.inventory_refill()
+            print("Refilled the dispenser")
 
 
         return True
