@@ -131,6 +131,21 @@ class promptThread(threading.Thread):
                 print("Logged out as doctor id: " + str(doctor_id))
                 doctor_id = 0
 
+            if cmd == "update credentials" and doctor_test:
+                user = database.get_user_by_uid(doctor_id)
+                print("Please verify your login.")
+                login_username = input("Old username: ")
+                login_password = input("Old password: ")
+                if user.username == login_username and user.password == login_password:
+                    new_username = input("New username = ")
+                    new_password = input("New password = ")
+                    user.username = new_username
+                    user.password = new_password
+                    database.update_user(user)
+                    database.commit()
+                    print("Credentials updated.")
+
+
             if cmd == "update rfid" and doctor_test:
                 user_id = input("User id = ")
                 user = database.get_user_by_uid(user_id)
@@ -142,6 +157,7 @@ class promptThread(threading.Thread):
                 user.rfid = new_rfid
                 database.update_user(user)
                 database.commit()
+                print("rfid updated.")
 
             if cmd == "get users" and doctor_test:
                 users = database.get_users()

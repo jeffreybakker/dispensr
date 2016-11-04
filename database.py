@@ -86,7 +86,7 @@ def uid_available(uid):
     :return: A boolean indicating whether the UID is available or not
     """
     c = get_cursor()
-    cursor = c.execute('''SELECT id FROM Users WHERE id=?''', uid)
+    cursor = c.execute('''SELECT id FROM Users WHERE id=?''', (uid,))
 
     if cursor.fetchone is None:
         return False
@@ -102,7 +102,7 @@ def get_user_by_uid(uid):
     :return: An <User> object for the given uid, None if the user was not found
     """
     c = get_cursor()
-    cursor = c.execute('''SELECT * FROM Users WHERE id=?''', uid)
+    cursor = c.execute('''SELECT * FROM Users WHERE id=?''', (uid,))
 
     row = cursor.fetchone()
 
