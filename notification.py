@@ -29,11 +29,11 @@ class Email:
         msg.attach(MIMEText(self.body))
 
         # Make a secure connection with the mailserver
-        server = smtplib.SMTP('mail.jbakker.co')
+        server = smtplib.SMTP('smtp.utwente.nl')
         server.starttls()
 
         # Login onto the mailserver
-        server.login('drug.dispensr@jbakker.co', 'dispensr')
+        server.login('', '')
 
         text = msg.as_string()
 
