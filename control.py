@@ -58,8 +58,6 @@ def get_prescriptions(user):
     """
     prescriptions = user.get_prescriptions()
 
-    print(prescriptions)
-
     # Create a list called res (result in the comments) where all the prescriptions that need to be handed out will be stored in
     res = []
 
