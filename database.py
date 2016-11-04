@@ -213,8 +213,11 @@ def insert_prescription(prescription):
     """
     c = get_cursor()
     c.execute(
-        '''INSERT INTO Prescriptions (id, uid, medicine_id, descr, max_dose, min_time, amount, cur_dose, last_time, doctor, date, duration) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''',
-        (prescription.id, prescription.uid, prescription.medicine_id, prescription.descr, prescription.max_dose, prescription.min_time, prescription.amount, prescription.cur_dose, prescription.last_time, prescription.doctor, prescription.date, prescription.duration))
+        '''INSERT INTO Prescriptions (id, uid, medicine_id, descr, max_dose, min_time, amount, cur_dose, last_time,
+                                      doctor, date, duration) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''',
+        (prescription.id, prescription.uid, prescription.medicine_id, prescription.descr, prescription.max_dose,
+         prescription.min_time, prescription.amount, prescription.cur_dose, prescription.last_time, prescription.doctor,
+         prescription.date, prescription.duration))
 
 
 def update_prescription(prescription):
@@ -225,8 +228,11 @@ def update_prescription(prescription):
     """
     c = get_cursor()
     c.execute(
-        '''UPDATE Prescriptions SET medicine_id=?, descr=?, max_dose=?, min_time=?, amount=?, cur_dose=?, last_time=?, doctor=?, date=?, duration=? WHERE id=?''',
-        (prescription.medicine_id, prescription.descr, prescription.max_dose, prescription.min_time, prescription.amount, prescription.cur_dose, prescription.last_time, prescription.doctor, prescription.date, prescription.duration, prescription.id))
+        '''UPDATE Prescriptions SET medicine_id=?, descr=?, max_dose=?, min_time=?, amount=?, cur_dose=?, last_time=?,
+                                    doctor=?, date=?, duration=? WHERE id=?''',
+        (prescription.medicine_id, prescription.descr, prescription.max_dose, prescription.min_time,
+         prescription.amount, prescription.cur_dose, prescription.last_time, prescription.doctor, prescription.date,
+         prescription.duration, prescription.id))
 
 
 def remove_prescription(id):
