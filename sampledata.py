@@ -31,14 +31,20 @@ def init():
         Prescription(3, 3, 4, "Wegspoelen met water", 2, 10800, 1, 0, 0, 2, calendar.timegm(time.gmtime()), 850509194),
         Prescription(4, 4, 5, "Dik opsmeren", 1, 54000, 1, 0, 0, 8, calendar.timegm(time.gmtime()), 949174800),
         Prescription(5, 4, 6, "Dun opsmeren", 4, 7200, 4, 0, 0, 8, calendar.timegm(time.gmtime()), 1176683430),
-        Prescription(6, 6, 7, "Aanmengen met water en opdrinken, vervolgens wegspoelen met water", 5, 4800, 10, 0, 0, 2, calendar.timegm(time.gmtime()), 2087498637),
+        Prescription(6, 6, 7, "Aanmengen met water en opdrinken, vervolgens wegspoelen met water", 5, 4800, 10, 0, 0, 2,
+                     calendar.timegm(time.gmtime()), 2087498637),
         Prescription(7, 6, 2, "Tegen de keelpijn", 3, 28000, 3, 0, 0, 2, calendar.timegm(time.gmtime()), 595486204),
-        Prescription(8, 6, 8, "Opdrinken, niet wegspoelen met water", 1, 54000, 1, 0, 0, 2, calendar.timegm(time.gmtime()), 31474750),
-        Prescription(9, 7, 9, "Innemen en wegspoelen met water", 2, 28000, 1, 0, 0, 8, calendar.timegm(time.gmtime()), 1894621031),
-        Prescription(10, 9, 10, "Innemen, niet kapot bijten en wegspoelen met water", 3, 10800, 2, 0, 0, 2, calendar.timegm(time.gmtime()), 580542035),
+        Prescription(8, 6, 8, "Opdrinken, niet wegspoelen met water", 1, 54000, 1, 0, 0, 2,
+                     calendar.timegm(time.gmtime()), 31474750),
+        Prescription(9, 7, 9, "Innemen en wegspoelen met water", 2, 28000, 1, 0, 0, 8, calendar.timegm(time.gmtime()),
+                     1894621031),
+        Prescription(10, 9, 10, "Innemen, niet kapot bijten en wegspoelen met water", 3, 10800, 2, 0, 0, 2,
+                     calendar.timegm(time.gmtime()), 580542035),
         Prescription(11, 10, 1, "Niet op kauwen", 1, 54000, 2, 0, 0, 2, calendar.timegm(time.gmtime()), 2710152017),
-        Prescription(12, 10, 7, "Aanmengen met water en opdrinken, vervolgens wegspoelen met water", 1, 54000, 1, 0, 0, 8, calendar.timegm(time.gmtime()), 258076473),
-        Prescription(13, 10, 11, "Aanmengen met water en dun opsmeren", 4, 3600, 2, 0, 0, 2, calendar.timegm(time.gmtime()), 2995525319)
+        Prescription(12, 10, 7, "Aanmengen met water en opdrinken, vervolgens wegspoelen met water", 1, 54000, 1, 0, 0,
+                     8, calendar.timegm(time.gmtime()), 258076473),
+        Prescription(13, 10, 11, "Aanmengen met water en dun opsmeren", 4, 3600, 2, 0, 0, 2,
+                     calendar.timegm(time.gmtime()), 2995525319)
 
     ]
 
