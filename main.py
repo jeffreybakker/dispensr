@@ -240,6 +240,7 @@ class TimeModel(threading.Thread):
 
         # A refill every 24 hours
         refill = 24 * 60 * 60
+        sleepy_time = 5
 
         cur_time = int(calendar.timegm(time.gmtime()))
         last_time = cur_time - (cur_time % refill)
@@ -256,7 +257,7 @@ class TimeModel(threading.Thread):
                 control.inventory_refill()
                 last_time = new
             else: # Wait till refill
-                thread.sleep(new - cur_time)
+                time.sleep(sleepy_time)
 
         database.close()
 
