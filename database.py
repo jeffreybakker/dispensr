@@ -140,7 +140,7 @@ def get_users_by_role(role):
     :return: A list of all users with a certain role
     """
     c = get_cursor()
-    cursor = c.execute('''SELECT * FROM Users WHERE role=?''', role)
+    cursor = c.execute('''SELECT * FROM Users WHERE role=?''', (role,))
 
     res = []
 
@@ -188,21 +188,17 @@ def get_users():
     return res
 
 
-def first_available_pid():
+def remove_user(id):
     """\
-    Returns the first available pid for the database
+    Removes an <Prescription> object from the database
 
-    :return: An integer for the first not-taken PID
+    :param prescription: An object of the <Prescription> type
     """
+
     c = get_cursor()
-    cursor = c.execute('''SELECT id FROM Prescriptions ORDER BY id DESC LIMIT 1''')
-
-    row = cursor.fetchone()
-
-    if row is None:
-        return 0
-
-    return row[0] + 1
+    c.execute(
+        '''DELETE FROM Users WHERE id=?''', (id,)
+    )
 
 
 def insert_prescription(prescription):
@@ -228,6 +224,17 @@ def update_prescription(prescription):
         '''UPDATE Prescriptions SET medicine_id=?, descr=?, max_dose=?, min_time=?, amount=?, cur_dose=?, last_time=?, doctor=?, date=?, duration=? WHERE id=?''',
         (prescription.medicine_id, prescription.descr, prescription.max_dose, prescription.min_time, prescription.amount, prescription.cur_dose, prescription.last_time, prescription.doctor, prescription.date, prescription.duration, prescription.id))
 
+def remove_prescription(id):
+    """\
+    Removes an <Prescription> object from the database
+
+    :param prescription: An object of the <Prescription> type
+    """
+
+    c = get_cursor()
+    c.execute(
+        '''DELETE FROM Prescriptions WHERE id=?''', (id,)
+    )
 
 def get_prescriptions_by_uid(uid):
     """\

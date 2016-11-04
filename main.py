@@ -3,6 +3,10 @@ import hashlib
 import arduino
 import control
 import database
+import calendar
+import time
+from prescription import Prescription
+from user import User
 from preferences import Preferences
 
 # Setup Variables
@@ -66,7 +70,7 @@ class communicationThread(threading.Thread):
 
             # Show the dispensed drugs in the terminal
             if len(prescriptions) > 0:
-                print("Dispensing ", len(prescriptions), " medicines")
+                print("Dispensing ", len(prescriptions), " medicine(s)")
 
                 for pres in prescriptions:
                     for i in inventory:
@@ -82,8 +86,9 @@ class communicationThread(threading.Thread):
             else:
                 print("No prescriptions available for consumption at this moment")
 
-        else:   # For doctor or nurse, assuming that they will only want to access the machine in order to refill it
+        if user.role == 'ref':   # For doctor or nurse, assuming that they will only want to access the machine in order to refill it
             control.inventory_refill()
+
 
         return True
 
@@ -98,6 +103,9 @@ class promptThread(threading.Thread):
     def run(self):
         print("Starting " + self.name)
         global running
+        global doctor_test
+        global doctor_id
+        doctor_test = False
 
         # Prompt loop
         while running:
@@ -105,8 +113,156 @@ class promptThread(threading.Thread):
             if cmd == "exit":
                 running = False
 
-        # threads.remove(self)
+            if cmd == "login":
+                doctors = database.get_users_by_role('doc')
+                print("Please login to make changes.")
+                login_username = input("Username: ")
+                login_password = input("Password: ")
+                for doctor in doctors:
+                    if doctor.username == login_username and doctor.password == login_password:
+                        doctor_id = doctor.id
+                        print("Logged in as doctor id: " + str(doctor_id))
+                        doctor_test = True
+                if not doctor_test:
+                    print("Invalid credentials!")
+            if cmd == "test":
+                print(doctor_test)
+
+            if cmd == "logout" and doctor_test:
+                doctor_test = False
+                print("Logged out as doctor id: " + str(doctor_id))
+                doctor_id = 0
+            #fix de push
+            if cmd == "get users" and doctor_test:
+                users = database.get_users()
+                print("id\trole")
+                for user in users:
+                    print(str(user.id) + "\t" + str(user.role))
+
+            if cmd == "get prescriptions" and doctor_test:
+                choice = input("For all users y/n: ")
+                prescriptions = database.get_prescriptions()
+                if choice == "y":
+                    print("id\tmedicine\tdescription")
+                    for prescription in prescriptions:
+                        print(str(prescription.id) + "\t"  + str(prescription.medicine_id) + "\t\t\t" + str(prescription.descr))
+                elif choice == "n":
+                    user_id = int(input("id = "))
+                    print("id\tmedicine\tdescription")
+                    for prescription in prescriptions:
+                        if prescription.uid == user_id:
+                            print(str(prescription.id) + "\t" + str(prescription.medicine_id) + "\t\t\t" + str(prescription.descr))
+                else:
+                    print("Invalid input!")
+
+
+            if cmd == "add prescription" and doctor_test:
+
+                prescriptions = database.get_prescriptions()
+                prescription_list = []
+                for prescription in prescriptions:
+                    prescription_list.append(prescription.id)
+                prescription_id = int(max(prescription_list) + 1)
+                patient_id = int(input("Patient id = "))
+                medicine_id = int(input("Medicine id = "))
+                description = input("Description of use = ")
+                max_dose = int(input("Daily max dose = "))
+                min_time = int(input("Minimum time between dispenses in seconds = ")) #TODO time conversion something
+                amount = int(input("Amount of medicine per dispense/dose = "))
+                cur_dose = 0
+                duration = int(input("Prescription duration in days = ")) * 86400
+                date = int(calendar.timegm(time.gmtime()))
+
+                users = database.get_users()
+                patient_test = False
+                for user in users:
+                    if patient_id == user.id:
+                        print("New prescription added with id: " + str(prescription_id))
+                        database.insert_prescription(Prescription.parse_raw([prescription_id, patient_id, medicine_id, description, max_dose, min_time, amount, cur_dose, date, doctor_id, duration, date]))
+                        database.commit()
+                        patient_test = True
+                if not patient_test:
+                    print("Patient does not exist!")
+
+            if cmd == "remove prescription" and doctor_test:
+                prescription_id = int(input("prescription id = "))
+                database.remove_prescription(prescription_id)
+                database.commit()
+                print("Prescription removed.")
+
+            if cmd == "add user" and doctor_test:
+                users = database.get_users()
+                user_list = []
+                for user in users:
+                    user_list.append(user.id)
+                user_id = int(max(user_list) + 1)
+                rfid = int(input("RFID = "))
+                role = input("role(pat/doc/ref) = ")
+                if role == 'doc':
+                    new_username = input("New user username = ")
+                    new_password = input("New user password = ")
+                else:
+                    new_username = ""
+                    new_password = ""
+                database.insert_user(User.parse_raw([user_id, rfid, role, new_username, new_password]))
+                database.commit()
+                print("New user added with id: " + str(user_id))
+
+            if cmd == "remove user" and doctor_test:
+                user_id = int(input("User id = "))
+                database.remove_user(user_id)
+                database.commit()
+                print("User removed.")
+
+            if cmd == "help":
+                print("Commands: login, logout, exit, get prescriptions, add prescription, remove prescription, add user, remove user")
+
+
+         # threads.remove(self)
         print("Exiting " + self.name)
+
+
+# Communication Thread
+class TimeModel(threading.Thread):
+    def __init__(self, threadID, name):
+        threading.Thread.__init__(self)
+        self.threadID = threadID
+        self.name = name
+
+    def run(self):
+        # Imports
+        import notification
+        from concurrent.futures import thread
+
+        # Make global variables available in local context
+        global running, pref
+
+        # Initialize everything
+        print("Starting " + self.name)
+        database.init(pref.get_preference("database"))
+
+        # A refill every 24 hours
+        refill = 24 * 60 * 60
+        sleepy_time = 5
+
+        cur_time = int(calendar.timegm(time.gmtime()))
+        last_time = cur_time - (cur_time % refill)
+
+        # Run the code
+        while running:
+            # Calculate next refill
+            cur_time = int(calendar.timegm(time.gmtime()))
+            new = last_time + refill
+
+            # Refill?
+            if cur_time > new:
+                notification.send_refill()
+                control.inventory_refill()
+                last_time = new
+            else: # Wait till refill
+                time.sleep(sleepy_time)
+
+        database.close()
 
 
 # Encrypt RFID-tag
@@ -119,12 +275,18 @@ def encryptRFID(tag):
 print("Starting Main Thread")
 
 running = True
+
 communication_thread = communicationThread(1, "Communication Thread")
 communication_thread.start()
 threads.append(communication_thread)
+
 prompt_thread = promptThread(2, "Prompt Thread")
 prompt_thread.start()
 threads.append(prompt_thread)
+
+time_thread = TimeModel(3, "Time Model Thread")
+time_thread.start()
+threads.append(time_thread)
 
 # Wait for all threads to complete
 for t in threads:
