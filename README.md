@@ -28,5 +28,5 @@ If you want to test the commands in the console, type `help` for a list of possi
 **PLEASE NOTE:** *sampledata.py* should be removed from the project when releasing it to a hospital or retirement home (or any other facility that would require a drug dispenser) and any references in the code should be safely removed
 
 Then we have the scripts in the */app/* folder, when running *client.py* and *server.py*, please make sure to start them in the following order:
-1. *server.py* first, because it has to set up before the client can try to connect to it
-2. *client.py* second, because when it starts, it should be able to connect to the server, when this is not the case, it will just close
+1 *server.py* first, because it has to set up before the client can try to connect to it
+2 *client.py* second, because when it starts, it should be able to connect to the server, when this is not the case, it will just close
