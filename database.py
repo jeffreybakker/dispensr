@@ -31,6 +31,8 @@ def close():
     Commits all data changes and closes the database
     """
     global conn
+    if conn is None:
+        return
     commit()
     conn.close()
     conn = None
@@ -51,6 +53,8 @@ def commit():
     Commits all database changes made since the last commit
     """
     global conn
+    if conn is None:
+        return
     conn.commit()
 
 
@@ -86,7 +90,7 @@ def uid_available(uid):
     :return: A boolean indicating whether the UID is available or not
     """
     c = get_cursor()
-    cursor = c.execute('''SELECT id FROM Users WHERE id=?''', uid)
+    cursor = c.execute('''SELECT id FROM Users WHERE id=?''', (uid,))
 
     if cursor.fetchone is None:
         return False
@@ -102,7 +106,7 @@ def get_user_by_uid(uid):
     :return: An <User> object for the given uid, None if the user was not found
     """
     c = get_cursor()
-    cursor = c.execute('''SELECT * FROM Users WHERE id=?''', uid)
+    cursor = c.execute('''SELECT * FROM Users WHERE id=?''', (uid,))
 
     row = cursor.fetchone()
 
@@ -209,8 +213,11 @@ def insert_prescription(prescription):
     """
     c = get_cursor()
     c.execute(
-        '''INSERT INTO Prescriptions (id, uid, medicine_id, descr, max_dose, min_time, amount, cur_dose, last_time, doctor, date, duration) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''',
-        (prescription.id, prescription.uid, prescription.medicine_id, prescription.descr, prescription.max_dose, prescription.min_time, prescription.amount, prescription.cur_dose, prescription.last_time, prescription.doctor, prescription.date, prescription.duration))
+        '''INSERT INTO Prescriptions (id, uid, medicine_id, descr, max_dose, min_time, amount, cur_dose, last_time,
+                                      doctor, date, duration) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''',
+        (prescription.id, prescription.uid, prescription.medicine_id, prescription.descr, prescription.max_dose,
+         prescription.min_time, prescription.amount, prescription.cur_dose, prescription.last_time, prescription.doctor,
+         prescription.date, prescription.duration))
 
 
 def update_prescription(prescription):
@@ -221,8 +228,11 @@ def update_prescription(prescription):
     """
     c = get_cursor()
     c.execute(
-        '''UPDATE Prescriptions SET medicine_id=?, descr=?, max_dose=?, min_time=?, amount=?, cur_dose=?, last_time=?, doctor=?, date=?, duration=? WHERE id=?''',
-        (prescription.medicine_id, prescription.descr, prescription.max_dose, prescription.min_time, prescription.amount, prescription.cur_dose, prescription.last_time, prescription.doctor, prescription.date, prescription.duration, prescription.id))
+        '''UPDATE Prescriptions SET medicine_id=?, descr=?, max_dose=?, min_time=?, amount=?, cur_dose=?, last_time=?,
+                                    doctor=?, date=?, duration=? WHERE id=?''',
+        (prescription.medicine_id, prescription.descr, prescription.max_dose, prescription.min_time,
+         prescription.amount, prescription.cur_dose, prescription.last_time, prescription.doctor, prescription.date,
+         prescription.duration, prescription.id))
 
 
 def remove_prescription(id):

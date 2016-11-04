@@ -8,6 +8,7 @@ import time
 from prescription import Prescription
 from user import User
 from preferences import Preferences
+import sys
 
 # Setup Variables
 pref = Preferences()
@@ -63,6 +64,8 @@ class communicationThread(threading.Thread):
             print("No user found with the RFID:", rfid)
             return False
 
+        print("User found:", user.id)
+
         if user.role == 'pat':
             # If the user is a patient, get all prescriptions and the inventory
             prescriptions = control.get_prescriptions(user)
@@ -88,6 +91,7 @@ class communicationThread(threading.Thread):
 
         if user.role == 'ref':   # For doctor or nurse, assuming that they will only want to access the machine in order to refill it
             control.inventory_refill()
+            print("Refilled the dispenser")
 
 
         return True
@@ -112,6 +116,9 @@ class promptThread(threading.Thread):
             cmd = input("> ")
             if cmd == "exit":
                 running = False
+                database.close()
+                print("Exiting now")
+                sys.exit(0)
 
             if cmd == "login":
                 doctors = database.get_users_by_role('doc')
@@ -130,7 +137,22 @@ class promptThread(threading.Thread):
                 doctor_test = False
                 print("Logged out as doctor id: " + str(doctor_id))
                 doctor_id = 0
-#test
+
+            if cmd == "update credentials" and doctor_test:
+                user = database.get_user_by_uid(doctor_id)
+                print("Please verify your login.")
+                login_username = input("Old username: ")
+                login_password = input("Old password: ")
+                if user.username == login_username and user.password == login_password:
+                    new_username = input("New username = ")
+                    new_password = input("New password = ")
+                    user.username = new_username
+                    user.password = new_password
+                    database.update_user(user)
+                    database.commit()
+                    print("Credentials updated.")
+
+
             if cmd == "update rfid" and doctor_test:
                 user_id = input("User id = ")
                 user = database.get_user_by_uid(user_id)
@@ -142,6 +164,7 @@ class promptThread(threading.Thread):
                 user.rfid = new_rfid
                 database.update_user(user)
                 database.commit()
+                print("rfid updated.")
 
             if cmd == "get users" and doctor_test:
                 users = database.get_users()
@@ -223,7 +246,17 @@ class promptThread(threading.Thread):
                 print("User removed.")
 
             if cmd == "help":
-                print("Commands: login, logout, exit, get prescriptions, add prescription, remove prescription, add user, remove user")
+                commands = ["login",
+                            "logout",
+                            "exit",
+                            "get prescriptions",
+                            "add prescription",
+                            "remove prescription",
+                            "add user",
+                            "remove user",
+                            "update credentials",
+                            "update rfid"]
+                print("Commands:", commands)
 
 
          # threads.remove(self)
@@ -238,6 +271,7 @@ class TimeModel(threading.Thread):
         self.name = name
 
     def run(self):
+        print("Starting " + self.name)
         # Imports
         import notification
         from concurrent.futures import thread
@@ -246,7 +280,7 @@ class TimeModel(threading.Thread):
         global running, pref
 
         # Initialize everything
-        print("Starting " + self.name)
+
         database.init(pref.get_preference("database"))
 
         # A refill every 24 hours
@@ -288,13 +322,13 @@ communication_thread = communicationThread(1, "Communication Thread")
 communication_thread.start()
 threads.append(communication_thread)
 
-prompt_thread = promptThread(2, "Prompt Thread")
-prompt_thread.start()
-threads.append(prompt_thread)
-
 time_thread = TimeModel(3, "Time Model Thread")
 time_thread.start()
 threads.append(time_thread)
+
+prompt_thread = promptThread(2, "Prompt Thread")
+prompt_thread.start()
+threads.append(prompt_thread)
 
 # Wait for all threads to complete
 for t in threads:
