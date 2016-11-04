@@ -31,6 +31,8 @@ def close():
     Commits all data changes and closes the database
     """
     global conn
+    if conn is None:
+        return
     commit()
     conn.close()
     conn = None
@@ -51,6 +53,8 @@ def commit():
     Commits all database changes made since the last commit
     """
     global conn
+    if conn is None:
+        return
     conn.commit()
 
 
