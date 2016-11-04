@@ -238,6 +238,7 @@ class TimeModel(threading.Thread):
         self.name = name
 
     def run(self):
+        print("Starting " + self.name)
         # Imports
         import notification
         from concurrent.futures import thread
@@ -246,7 +247,7 @@ class TimeModel(threading.Thread):
         global running, pref
 
         # Initialize everything
-        print("Starting " + self.name)
+
         database.init(pref.get_preference("database"))
 
         # A refill every 24 hours
@@ -288,13 +289,13 @@ communication_thread = communicationThread(1, "Communication Thread")
 communication_thread.start()
 threads.append(communication_thread)
 
-prompt_thread = promptThread(2, "Prompt Thread")
-prompt_thread.start()
-threads.append(prompt_thread)
-
 time_thread = TimeModel(3, "Time Model Thread")
 time_thread.start()
 threads.append(time_thread)
+
+prompt_thread = promptThread(2, "Prompt Thread")
+prompt_thread.start()
+threads.append(prompt_thread)
 
 # Wait for all threads to complete
 for t in threads:
