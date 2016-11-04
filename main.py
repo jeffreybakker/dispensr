@@ -120,6 +120,8 @@ class promptThread(threading.Thread):
                 print("Exiting now")
                 sys.exit(0)
 
+            # command for logging in with username and password if the username and password are valid
+            #  doctor_test is set to true and doctor id is set to the corresponding id so the database can be edited
             if cmd == "login":
                 doctors = database.get_users_by_role('doc')
                 print("Please login to make changes.")
@@ -133,11 +135,14 @@ class promptThread(threading.Thread):
                 if not doctor_test:
                     print("Invalid credentials!")
 
+            # when logging out doctor test is set to false so no changes can be made
+            # doctor id is set to 0 so nobody can actually see who was the last doctor to log in
             if cmd == "logout" and doctor_test:
                 doctor_test = False
                 print("Logged out as doctor id: " + str(doctor_id))
                 doctor_id = 0
 
+            # to update credentials you must be logged in as a doctor and you have to verify your login data again
             if cmd == "update credentials" and doctor_test:
                 user = database.get_user_by_uid(doctor_id)
                 print("Please verify your login.")
@@ -152,7 +157,7 @@ class promptThread(threading.Thread):
                     database.commit()
                     print("Credentials updated.")
 
-
+            # to update a rfid tag you have to be logged in as a doctor and you have to input a user_id to which the new rfid will be bound
             if cmd == "update rfid" and doctor_test:
                 user_id = input("User id = ")
                 user = database.get_user_by_uid(user_id)
@@ -166,12 +171,14 @@ class promptThread(threading.Thread):
                 database.commit()
                 print("rfid updated.")
 
+            # when logged in as a doctor you can get all users with their roles (but not password or rfid)
             if cmd == "get users" and doctor_test:
                 users = database.get_users()
                 print("id\trole")
                 for user in users:
                     print(str(user.id) + "\t" + str(user.role))
 
+            # when logged in you can get prescriptions for a single user or you can get all prescriptions
             if cmd == "get prescriptions" and doctor_test:
                 choice = input("For all users y/n: ")
                 prescriptions = database.get_prescriptions()
@@ -188,6 +195,7 @@ class promptThread(threading.Thread):
                 else:
                     print("Invalid input!")
 
+            # as a logged in doctor you can add prescriptions. you will be prompted for all the data
             if cmd == "add prescription" and doctor_test:
                 prescriptions = database.get_prescriptions()
                 prescription_list = []
@@ -198,12 +206,13 @@ class promptThread(threading.Thread):
                 medicine_id = int(input("Medicine id = "))
                 description = input("Description of use = ")
                 max_dose = int(input("Daily max dose = "))
-                min_time = int(input("Minimum time between dispenses in seconds = ")) #TODO time conversion something
+                min_time = int(input("Minimum time between dispenses in seconds = "))
                 amount = int(input("Amount of medicine per dispense/dose = "))
                 cur_dose = 0
                 duration = int(input("Prescription duration in days = ")) * 86400
                 date = int(calendar.timegm(time.gmtime()))
 
+                # this part checks if the user is actually in the database else it prints "patient does not exist"
                 users = database.get_users()
                 patient_test = False
                 for user in users:
@@ -215,12 +224,14 @@ class promptThread(threading.Thread):
                 if not patient_test:
                     print("Patient does not exist!")
 
+            # as a logged in doctor you can remove a prescription by id
             if cmd == "remove prescription" and doctor_test:
                 prescription_id = int(input("prescription id = "))
                 database.remove_prescription(prescription_id)
                 database.commit()
                 print("Prescription removed.")
 
+            # as a logged in doctor you can add new users. you get prompted for all data (and for username and pw if you are adding a doctor)
             if cmd == "add user" and doctor_test:
                 users = database.get_users()
                 user_list = []
@@ -239,12 +250,14 @@ class promptThread(threading.Thread):
                 database.commit()
                 print("New user added with id: " + str(user_id))
 
+            # as a logged in doctor you can remove users by id
             if cmd == "remove user" and doctor_test:
                 user_id = int(input("User id = "))
                 database.remove_user(user_id)
                 database.commit()
                 print("User removed.")
 
+            # you can always print out all existing commands
             if cmd == "help":
                 commands = ["login",
                             "logout",
@@ -318,14 +331,17 @@ print("Starting Main Thread")
 
 running = True
 
+# starting communication thread for communication with arduino
 communication_thread = communicationThread(1, "Communication Thread")
 communication_thread.start()
 threads.append(communication_thread)
 
+# starting TimeModel thread for notifications
 time_thread = TimeModel(3, "Time Model Thread")
 time_thread.start()
 threads.append(time_thread)
 
+# starting prompt thread for command prompt
 prompt_thread = promptThread(2, "Prompt Thread")
 prompt_thread.start()
 threads.append(prompt_thread)
