@@ -74,8 +74,8 @@ def update_user(user):
     """
     c = get_cursor()
     c.execute(
-        '''UPDATE Users SET rfid=?, role='?', username='?', password='?' WHERE id=?''',
-        (user.rfid, user.role, user.username, user.password))
+        '''UPDATE Users SET rfid=?, role=?, username=?, password=? WHERE id=?''',
+        (user.rfid, user.role, user.username, user.password, user.id))
 
 
 def uid_available(uid):
@@ -224,6 +224,7 @@ def update_prescription(prescription):
         '''UPDATE Prescriptions SET medicine_id=?, descr=?, max_dose=?, min_time=?, amount=?, cur_dose=?, last_time=?, doctor=?, date=?, duration=? WHERE id=?''',
         (prescription.medicine_id, prescription.descr, prescription.max_dose, prescription.min_time, prescription.amount, prescription.cur_dose, prescription.last_time, prescription.doctor, prescription.date, prescription.duration, prescription.id))
 
+
 def remove_prescription(id):
     """\
     Removes an <Prescription> object from the database
@@ -235,6 +236,7 @@ def remove_prescription(id):
     c.execute(
         '''DELETE FROM Prescriptions WHERE id=?''', (id,)
     )
+
 
 def get_prescriptions_by_uid(uid):
     """\

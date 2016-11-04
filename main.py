@@ -125,13 +125,24 @@ class promptThread(threading.Thread):
                         doctor_test = True
                 if not doctor_test:
                     print("Invalid credentials!")
-            if cmd == "test":
-                print(doctor_test)
 
             if cmd == "logout" and doctor_test:
                 doctor_test = False
                 print("Logged out as doctor id: " + str(doctor_id))
                 doctor_id = 0
+
+            if cmd == "update rfid" and doctor_test:
+                user_id = input("User id = ")
+                user = database.get_user_by_uid(user_id)
+                if user is None:
+                    print("No user with this id!")
+                    continue
+
+                new_rfid = input("New rfid = ")
+                user.rfid = new_rfid
+                database.update_user(user)
+                database.commit()
+
             #fix de push
             if cmd == "get users" and doctor_test:
                 users = database.get_users()
@@ -155,9 +166,7 @@ class promptThread(threading.Thread):
                 else:
                     print("Invalid input!")
 
-
             if cmd == "add prescription" and doctor_test:
-
                 prescriptions = database.get_prescriptions()
                 prescription_list = []
                 for prescription in prescriptions:
