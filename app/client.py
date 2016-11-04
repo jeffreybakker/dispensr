@@ -12,7 +12,7 @@ from ui_login import UILogin
 from ui_loading import UILoading
 from ui_main import UIMain
 
-HOST, PORT = "127.0.0.1", 9999
+HOST, PORT = "130.89.179.45", 9999
 running = False
 blocking = False
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

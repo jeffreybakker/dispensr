@@ -214,6 +214,9 @@ class promptThread(threading.Thread):
                 database.commit()
                 print("User removed.")
 
+            if cmd == "help":
+                print("Commands: login, logout, exit, get prescriptions, add prescription, remove prescription, add user, remove user")
+
 
          # threads.remove(self)
         print("Exiting " + self.name)
