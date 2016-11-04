@@ -117,7 +117,7 @@ class promptThread(threading.Thread):
             if cmd == "exit":
                 running = False
                 database.close()
-                print("Brexiting now")
+                print("Exiting now")
                 sys.exit(0)
 
             if cmd == "login":
